@@ -1,4 +1,4 @@
-import 'dart:io';
+﻿import 'dart:io';
 
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/cupertino.dart';
@@ -182,7 +182,7 @@ class const _WindowsTitleBarWrapper({required final Widget? child})
               child: SvgPicture.asset('assets/icon/icon.svg'),
             ),
             const SizedBox(width: 8),
-            const Text('Saber'),
+            const Text('SaberMI'),
           ],
         ),
         centerTitle: false,
