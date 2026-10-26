@@ -93,9 +93,24 @@ sentry:
       no: 拒绝
       later: 稍后询问
 settings:
+  penActions:
+    none: 不执行操作
+    temporaryEraser: 按住时切换为橡皮（松开还原）
+    toggleEraser: 按一下切换（笔 ↔ 橡皮）
+    openPenOptions: 打开画笔设置
+    openColorPicker: 打开调色板
+    undo: 撤销
+    redo: 重做
+    previousPage: 上一页
+    nextPage: 下一页
+    toggleFingerDrawing: 切换手指绘图
+    toggleFullscreen: 切换全屏
+    laserPointer: 激光笔
+    selectTool: 选择工具
   prefCategories:
     general: 通用
     writing: 书写
+    stylus: 小米焦点触控笔 Pro 手势
     editor: 编辑器
     performance: 性能
     advanced: 高级
@@ -118,6 +133,11 @@ settings:
     disableEraserAfterUse: 自动禁用橡皮擦
     hideFingerDrawingToggle: 隐藏 切换手指绘图
     autoDisableFingerDrawingWhenStylusDetected: 自动禁用手指绘图
+    miuiPenGestures: 小米焦点触控笔 Pro 手势
+    penPinchAction: 轻捏笔身
+    penTapAction: 双击笔身
+    penSlideUpAction: 笔身上滑
+    penSlideDownAction: 笔身下滑
     editorPromptRename: 提示您重命名新笔记
     recentColorsDontSavePresets: 不在最近使用的颜色中保存预设颜色
     recentColorsLength: 要存储多少种最近的颜色
@@ -139,6 +159,11 @@ settings:
       fixedOn: 手指绘图固定为启用状态
       fixedOff: 手指绘图固定为禁用状态
     autoDisableFingerDrawingWhenStylusDetected: 当检测到手写笔时关闭手指绘图
+    miuiPenGestures: 用笔身的轻捏、双击和滑动来操作编辑器。需要小米焦点触控笔 Pro。
+    penPinchAction: 轻捏笔身。选「按住时切换」时只在轻捏期间生效。
+    penTapAction: 双击笔身。
+    penSlideUpAction: 在笔身上向上滑动。
+    penSlideDownAction: 在笔身上向下滑动。
     editorPromptRename: 您可以总是稍后重命名笔记
     printPageIndicators: 在导出中显示页码
     autosave: 短暂延迟后自动保存，或永不保存
@@ -257,6 +282,7 @@ profile:
 appInfo:
   licenseNotice: |-
     Saber  版权所有 © 2022-$buildYear  Adil Hanney
+    SaberMI 修改部分  版权所有 © 2026  Cat8th
     本程序不附带任何担保。这是自由软件，您可以在特定条件下重新分发它。
   debug: DEBUG
   sponsorButton: 点击此处赞助我或购买更多存储空间

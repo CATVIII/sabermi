@@ -1,0 +1,35 @@
+﻿# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright (C) 2026 Cat8th
+# Part of SaberMI, a fork of Saber.
+name: miui_penengine
+description: >-
+  Xiaomi Focus Pen Pro touch-film gesture support (pinch / tap / slide up / slide down)
+  for Saber on HyperOS tablets.
+version: 0.1.0
+
+topics:
+  - xiaomi
+  - stylus
+  - pen
+  - hyperos
+
+environment:
+  sdk: ^3.13.0
+  flutter: ">=3.47.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  logging: ^1.2.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: com.saber.miui_penengine
+        pluginClass: MiuiPenenginePlugin

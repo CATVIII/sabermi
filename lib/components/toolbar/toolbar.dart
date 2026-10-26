@@ -51,7 +51,17 @@ class Toolbar extends StatefulWidget {
     required this.exportAsSba,
     required this.exportAsPdf,
     required this.exportAsPng,
+    this.toolOptionsType,
+    this.showColorOptions,
+    this.showExportOptions,
   });
+
+  /// Optional external notifiers, so the editor can open these panels from
+  /// sources other than the toolbar buttons (e.g. pen body gestures).
+  /// When omitted the toolbar owns its own private notifiers.
+  final ValueNotifier<ToolOptions>? toolOptionsType;
+  final ValueNotifier<bool>? showColorOptions;
+  final ValueNotifier<bool>? showExportOptions;
 
   final bool readOnly;
 
@@ -89,9 +99,12 @@ class Toolbar extends StatefulWidget {
 }
 
 class _ToolbarState extends State<Toolbar> {
-  ValueNotifier<bool> showExportOptions = ValueNotifier(false);
-  ValueNotifier<bool> showColorOptions = ValueNotifier(false);
-  ValueNotifier<ToolOptions> toolOptionsType = ValueNotifier(ToolOptions.hide);
+  late final ValueNotifier<bool> showExportOptions =
+      widget.showExportOptions ?? ValueNotifier(false);
+  late final ValueNotifier<bool> showColorOptions =
+      widget.showColorOptions ?? ValueNotifier(false);
+  late final ValueNotifier<ToolOptions> toolOptionsType =
+      widget.toolOptionsType ?? ValueNotifier(ToolOptions.hide);
 
   @override
   void initState() {

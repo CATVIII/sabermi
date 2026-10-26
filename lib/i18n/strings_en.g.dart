@@ -127,6 +127,7 @@ class Translations$settings$en {
 	final Translations _root; // ignore: unused_field
 
 	// Translations
+	late final Translations$settings$penActions$en penActions = Translations$settings$penActions$en.internal(_root);
 	late final Translations$settings$prefCategories$en prefCategories = Translations$settings$prefCategories$en.internal(_root);
 	late final Translations$settings$prefLabels$en prefLabels = Translations$settings$prefLabels$en.internal(_root);
 	late final Translations$settings$prefDescriptions$en prefDescriptions = Translations$settings$prefDescriptions$en.internal(_root);
@@ -260,8 +261,8 @@ class Translations$appInfo$en {
 
 	// Translations
 
-	/// en: 'Saber Copyright © 2022-$buildYear Adil Hanney This program comes with absolutely no warranty. This is free software, and you are welcome to redistribute it under certain conditions.'
-	String licenseNotice({required Object buildYear}) => 'Saber  Copyright © 2022-${buildYear}  Adil Hanney\nThis program comes with absolutely no warranty. This is free software, and you are welcome to redistribute it under certain conditions.';
+	/// en: 'Saber Copyright © 2022-$buildYear Adil Hanney SaberMI modifications Copyright © 2026 Cat8th This program comes with absolutely no warranty. This is free software, and you are welcome to redistribute it under certain conditions.'
+	String licenseNotice({required Object buildYear}) => 'Saber  Copyright © 2022-${buildYear}  Adil Hanney\nSaberMI modifications  Copyright © 2026  Cat8th\nThis program comes with absolutely no warranty. This is free software, and you are welcome to redistribute it under certain conditions.';
 
 	/// en: 'DEBUG'
 	String get debug => 'DEBUG';
@@ -617,6 +618,54 @@ class Translations$sentry$consent$en {
 	late final Translations$sentry$consent$answers$en answers = Translations$sentry$consent$answers$en.internal(_root);
 }
 
+// Path: settings.penActions
+class Translations$settings$penActions$en {
+	Translations$settings$penActions$en.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Do nothing'
+	String get none => 'Do nothing';
+
+	/// en: 'Eraser while held (release to restore)'
+	String get temporaryEraser => 'Eraser while held (release to restore)';
+
+	/// en: 'Toggle pen / eraser on each press'
+	String get toggleEraser => 'Toggle pen / eraser on each press';
+
+	/// en: 'Open pen settings'
+	String get openPenOptions => 'Open pen settings';
+
+	/// en: 'Open colour picker'
+	String get openColorPicker => 'Open colour picker';
+
+	/// en: 'Undo'
+	String get undo => 'Undo';
+
+	/// en: 'Redo'
+	String get redo => 'Redo';
+
+	/// en: 'Previous page'
+	String get previousPage => 'Previous page';
+
+	/// en: 'Next page'
+	String get nextPage => 'Next page';
+
+	/// en: 'Toggle finger drawing'
+	String get toggleFingerDrawing => 'Toggle finger drawing';
+
+	/// en: 'Toggle fullscreen'
+	String get toggleFullscreen => 'Toggle fullscreen';
+
+	/// en: 'Laser pointer'
+	String get laserPointer => 'Laser pointer';
+
+	/// en: 'Select tool'
+	String get selectTool => 'Select tool';
+}
+
 // Path: settings.prefCategories
 class Translations$settings$prefCategories$en {
 	Translations$settings$prefCategories$en.internal(this._root);
@@ -630,6 +679,9 @@ class Translations$settings$prefCategories$en {
 
 	/// en: 'Writing'
 	String get writing => 'Writing';
+
+	/// en: 'Xiaomi Focus Pen Pro gestures'
+	String get stylus => 'Xiaomi Focus Pen Pro gestures';
 
 	/// en: 'Editor'
 	String get editor => 'Editor';
@@ -703,6 +755,21 @@ class Translations$settings$prefLabels$en {
 	/// en: 'Auto-disable finger drawing'
 	String get autoDisableFingerDrawingWhenStylusDetected => 'Auto-disable finger drawing';
 
+	/// en: 'Xiaomi Focus Pen Pro gestures'
+	String get miuiPenGestures => 'Xiaomi Focus Pen Pro gestures';
+
+	/// en: 'Lightly pinch pen body'
+	String get penPinchAction => 'Lightly pinch pen body';
+
+	/// en: 'Double tap pen body'
+	String get penTapAction => 'Double tap pen body';
+
+	/// en: 'Slide up on pen body'
+	String get penSlideUpAction => 'Slide up on pen body';
+
+	/// en: 'Slide down on pen body'
+	String get penSlideDownAction => 'Slide down on pen body';
+
 	/// en: 'Prompt you to rename new notes'
 	String get editorPromptRename => 'Prompt you to rename new notes';
 
@@ -761,6 +828,21 @@ class Translations$settings$prefDescriptions$en {
 
 	/// en: 'Turn off finger drawing when a stylus is detected'
 	String get autoDisableFingerDrawingWhenStylusDetected => 'Turn off finger drawing when a stylus is detected';
+
+	/// en: 'Use the pen body's pinch, double tap and slide gestures to control the editor. Requires a Xiaomi Focus Pen Pro.'
+	String get miuiPenGestures => 'Use the pen body\'s pinch, double tap and slide gestures to control the editor. Requires a Xiaomi Focus Pen Pro.';
+
+	/// en: 'Lightly pinching the pen body. "Eraser while held" only lasts as long as you keep pinching.'
+	String get penPinchAction => 'Lightly pinching the pen body. "Eraser while held" only lasts as long as you keep pinching.';
+
+	/// en: 'Double-tapping the pen body.'
+	String get penTapAction => 'Double-tapping the pen body.';
+
+	/// en: 'Sliding up on the pen body.'
+	String get penSlideUpAction => 'Sliding up on the pen body.';
+
+	/// en: 'Sliding down on the pen body.'
+	String get penSlideDownAction => 'Sliding down on the pen body.';
 
 	/// en: 'You can always rename notes later'
 	String get editorPromptRename => 'You can always rename notes later';

@@ -10,6 +10,7 @@ import 'package:saber/components/home/sort_button.dart';
 import 'package:saber/components/navbar/responsive_navbar.dart';
 import 'package:saber/data/codecs/base64_codec.dart';
 import 'package:saber/data/flavor_config.dart';
+import 'package:saber/data/pen_action.dart';
 import 'package:saber/data/quota.dart';
 import 'package:saber/data/sentry/sentry_consent.dart';
 import 'package:saber/data/tools/highlighter.dart';
@@ -239,6 +240,42 @@ class Stows {
     'lastTool',
     ToolId.fountainPen,
     codec: ToolId.codec,
+    volatile: !_isOnMainIsolate,
+  );
+
+  /// Whether to ask the Xiaomi stylus service to deliver pen-body gestures
+  /// (tap / slide up / slide down) to this app.
+  ///
+  /// Pinch is delivered without registration, but the other three are swallowed
+  /// by the system unless the app has registered itself.
+  final miuiPenGesturesEnabled = PlainStow(
+    'miuiPenGesturesEnabled',
+    true,
+    volatile: !_isOnMainIsolate,
+  );
+
+  final penPinchAction = PlainStow(
+    'penPinchAction',
+    PenAction.temporaryEraser,
+    codec: PenAction.codec,
+    volatile: !_isOnMainIsolate,
+  );
+  final penTapAction = PlainStow(
+    'penTapAction',
+    PenAction.toggleEraser,
+    codec: PenAction.codec,
+    volatile: !_isOnMainIsolate,
+  );
+  final penSlideUpAction = PlainStow(
+    'penSlideUpAction',
+    PenAction.nextPage,
+    codec: PenAction.codec,
+    volatile: !_isOnMainIsolate,
+  );
+  final penSlideDownAction = PlainStow(
+    'penSlideDownAction',
+    PenAction.previousPage,
+    codec: PenAction.codec,
     volatile: !_isOnMainIsolate,
   );
   static StrokeOptions _strokeOptionsFromJson(Object json) =>

@@ -5,13 +5,14 @@ import 'dart:io';
 import 'package:collapsible/collapsible.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart' show kDebugMode;
+import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_quill/flutter_quill.dart' as flutter_quill;
 import 'package:keybinder/keybinder.dart';
 import 'package:logging/logging.dart';
+import 'package:miui_penengine/miui_penengine.dart';
 import 'package:path/path.dart' as p;
 import 'package:pdfrx/pdfrx.dart';
 import 'package:saber/components/canvas/_asset_cache.dart';
@@ -38,6 +39,7 @@ import 'package:saber/data/extensions/change_notifier_extensions.dart';
 import 'package:saber/data/extensions/matrix4_extensions.dart';
 import 'package:saber/data/file_manager/file_manager.dart';
 import 'package:saber/data/nextcloud/saber_syncer.dart';
+import 'package:saber/data/pen_action.dart';
 import 'package:saber/data/prefs.dart';
 import 'package:saber/data/tools/_tool.dart';
 import 'package:saber/data/tools/eraser.dart';
@@ -180,14 +182,194 @@ class EditorState extends State<Editor> {
   /// If we add customized button bindings, we may have to separate this again.
   var stylusButtonWasPressed = false;
 
+  /// Toolbar panel state, hoisted here so pen-body gestures can open the
+  /// pen options / colour picker panels too.
+  final ValueNotifier<ToolOptions> toolOptionsType = ValueNotifier(
+    ToolOptions.hide,
+  );
+  final ValueNotifier<bool> showColorOptions = ValueNotifier(false);
+  final ValueNotifier<bool> showExportOptions = ValueNotifier(false);
+
+  /// The tool to restore when a [PenAction.temporaryEraser] gesture ends.
+  Tool? _toolBeforeTemporaryEraser;
+
+  StreamSubscription<PenGestureEvent>? _penGestureSubscription;
+  var _penGesturesRegistered = false;
+
   @override
   void initState() {
     DynamicMaterialApp.addFullscreenListener(_setState);
 
     _initAsync();
     _assignKeybindings();
+    stows.miuiPenGesturesEnabled.addListener(_onPenGesturesEnabledChanged);
+    _initPenGestures();
 
     super.initState();
+  }
+
+  void _onPenGesturesEnabledChanged() {
+    if (stows.miuiPenGesturesEnabled.value) {
+      _initPenGestures();
+    } else {
+      _penGestureSubscription?.cancel();
+      _penGestureSubscription = null;
+      _penGesturesRegistered = false;
+      unawaited(MiuiPenengine.unregister());
+    }
+  }
+
+  /// Registers for Xiaomi Focus Pen Pro pen-body gestures and starts listening.
+  ///
+  /// Degrades silently: on unsupported devices, or when registration fails,
+  /// nothing happens and the editor works exactly as before.
+  Future<void> _initPenGestures() async {
+    if (kIsWeb) return;
+    if (!stows.miuiPenGesturesEnabled.value) return;
+
+    await _penGestureSubscription?.cancel();
+    _penGestureSubscription = null;
+
+    try {
+      if (!await MiuiPenengine.isSupported()) {
+        log.fine('Xiaomi pen gestures not supported on this device');
+        return;
+      }
+      _penGestureSubscription = MiuiPenengine.events.listen(
+        _onPenGesture,
+        onError: (Object e, StackTrace s) {
+          log.warning('Pen gesture stream error', e, s);
+        },
+      );
+      _penGesturesRegistered = await MiuiPenengine.register();
+      log.info('Xiaomi pen gestures registered: $_penGesturesRegistered');
+    } catch (e, s) {
+      log.warning('Failed to set up pen gestures', e, s);
+    }
+    if (mounted) setState(() {});
+  }
+
+  void _onPenGesture(PenGestureEvent event) {
+    if (coreInfo.readOnly) return;
+    if (currentTool == Tool.textEditing) return;
+
+    final action = switch (event.gesture) {
+      .pinch => stows.penPinchAction.value,
+      .doubleTap => stows.penTapAction.value,
+      .slideUp => stows.penSlideUpAction.value,
+      .slideDown => stows.penSlideDownAction.value,
+    };
+    log.info(
+      'Pen gesture: ${event.gesture.name} ${event.isDown ? 'down' : 'up'}'
+      '${event.isDown ? '' : ' (held ${event.duration.inMilliseconds}ms)'}'
+      ' -> ${action.name}',
+    );
+
+    if (action.isHoldAction) {
+      _setTemporaryEraser(event.isDown);
+      return;
+    }
+
+    // Everything else is a one-shot action, so only fire on key-down.
+    if (!event.isDown) return;
+    _runPenAction(action);
+  }
+
+  /// Swaps to the eraser while [down] is true, restoring the previous tool after.
+  void _setTemporaryEraser(bool down) {
+    if (down) {
+      if (currentTool is! Eraser) {
+        _toolBeforeTemporaryEraser = currentTool;
+        currentTool = Eraser();
+      }
+    } else {
+      final previous = _toolBeforeTemporaryEraser;
+      _toolBeforeTemporaryEraser = null;
+      if (previous != null && currentTool is Eraser) {
+        currentTool = previous;
+      }
+    }
+    if (mounted) setState(() {});
+  }
+
+  void _runPenAction(PenAction action) {
+    switch (action) {
+      case .none:
+        break;
+      case .temporaryEraser:
+        break; // handled by _onPenGesture
+      case .toggleEraser:
+        selectTool(Eraser());
+      case .openPenOptions:
+        toggleToolOptionsPanel();
+      case .openColorPicker:
+        showColorOptions.value = !showColorOptions.value;
+      case .undo:
+        undo();
+      case .redo:
+        redo();
+      case .previousPage:
+        _scrollToRelativePage(-1);
+      case .nextPage:
+        _scrollToRelativePage(1);
+      case .toggleFingerDrawing:
+        stows.editorFingerDrawing.value = !stows.editorFingerDrawing.value;
+      case .toggleFullscreen:
+        DynamicMaterialApp.setFullscreen(
+          !DynamicMaterialApp.isFullscreen,
+          updateSystem: true,
+        );
+      case .laserPointer:
+        selectTool(LaserPointer.currentLaserPointer);
+      case .selectTool:
+        selectTool(Select.currentSelect);
+    }
+  }
+
+  /// Opens (or closes) the options panel matching the current tool.
+  void toggleToolOptionsPanel() {
+    final target = switch (currentTool) {
+      Highlighter() => ToolOptions.highlighter,
+      Pencil() => ToolOptions.pencil,
+      _ => ToolOptions.pen,
+    };
+    toolOptionsType.value = toolOptionsType.value == target
+        ? ToolOptions.hide
+        : target;
+  }
+
+  void _scrollToRelativePage(int delta) {
+    if (!mounted) return;
+    final target = (currentPageIndex + delta).clamp(
+      0,
+      coreInfo.pages.length - 1,
+    );
+    if (target == currentPageIndex) return;
+    CanvasGestureDetector.scrollToPage(
+      pageIndex: target,
+      pages: coreInfo.pages,
+      screenWidth: MediaQuery.sizeOf(context).width,
+      transformationController: _transformationController,
+    );
+  }
+
+  /// Selects [tool], treating [Eraser] as a two-way toggle with the previous pen.
+  void selectTool(Tool tool) {
+    if (tool is Eraser && currentTool is Eraser) {
+      tool = _lastNonEraserTool;
+    }
+
+    currentTool = tool;
+
+    if (tool is Highlighter) {
+      Highlighter.currentHighlighter = tool;
+    } else if (tool is Pencil) {
+      Pencil.currentPencil = tool;
+    } else if (tool is Pen) {
+      Pen.currentPen = tool;
+    }
+
+    if (mounted) setState(() {});
   }
 
   void _initAsync() async {
@@ -1477,24 +1659,10 @@ class EditorState extends State<Editor> {
         bottom: stows.editorToolbarAlignment.value != AxisDirection.up,
         child: Toolbar(
           readOnly: coreInfo.readOnly,
-          setTool: (tool) {
-            if (tool is Eraser && currentTool is Eraser) {
-              // setTool(Eraser) is a special case to toggle the eraser on/off
-              tool = _lastNonEraserTool;
-            }
-
-            currentTool = tool;
-
-            if (tool is Highlighter) {
-              Highlighter.currentHighlighter = tool;
-            } else if (tool is Pencil) {
-              Pencil.currentPencil = tool;
-            } else if (tool is Pen) {
-              Pen.currentPen = tool;
-            }
-
-            if (mounted) setState(() {});
-          },
+          setTool: selectTool,
+          toolOptionsType: toolOptionsType,
+          showColorOptions: showColorOptions,
+          showExportOptions: showExportOptions,
           currentTool: currentTool,
           duplicateSelection: () {
             final select = currentTool as Select;
@@ -2088,6 +2256,13 @@ class EditorState extends State<Editor> {
     stows.lastHighlighterOptions.notifyListeners();
     stows.lastPencilOptions.notifyListeners();
     stows.lastShapePenOptions.notifyListeners();
+
+    _penGestureSubscription?.cancel();
+    _penGestureSubscription = null;
+    stows.miuiPenGesturesEnabled.removeListener(_onPenGesturesEnabledChanged);
+    toolOptionsType.dispose();
+    showColorOptions.dispose();
+    showExportOptions.dispose();
 
     super.dispose();
   }

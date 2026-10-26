@@ -26,6 +26,7 @@ import 'package:saber/data/file_manager/file_manager.dart';
 import 'package:saber/data/flavor_config.dart';
 import 'package:saber/data/is_this_a_test.dart';
 import 'package:saber/data/locales.dart';
+import 'package:saber/data/pen_action.dart';
 import 'package:saber/data/prefs.dart';
 import 'package:saber/data/routes.dart';
 import 'package:saber/data/sentry/sentry_init.dart';
@@ -419,6 +420,52 @@ class _SettingsPageState extends State<SettingsPage> {
                   },
                 ),
 
+                SettingsSubtitle(subtitle: t.settings.prefCategories.stylus),
+                ValueListenableBuilder(
+                  valueListenable: stows.miuiPenGesturesEnabled,
+                  builder: (context, enabled, _) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        SettingsSwitch(
+                          title: t.settings.prefLabels.miuiPenGestures,
+                          subtitle: t.settings.prefDescriptions.miuiPenGestures,
+                          icon: CupertinoIcons.pencil,
+                          pref: stows.miuiPenGesturesEnabled,
+                        ),
+                        if (enabled) ...[
+                          _PenActionDropdown(
+                            title: t.settings.prefLabels.penPinchAction,
+                            subtitle: t.settings.prefDescriptions.penPinchAction,
+                            icon: Icons.pinch,
+                            pref: stows.penPinchAction,
+                          ),
+                          _PenActionDropdown(
+                            title: t.settings.prefLabels.penTapAction,
+                            subtitle: t.settings.prefDescriptions.penTapAction,
+                            icon: Icons.touch_app,
+                            pref: stows.penTapAction,
+                          ),
+                          _PenActionDropdown(
+                            title: t.settings.prefLabels.penSlideUpAction,
+                            subtitle:
+                                t.settings.prefDescriptions.penSlideUpAction,
+                            icon: Icons.swipe_up,
+                            pref: stows.penSlideUpAction,
+                          ),
+                          _PenActionDropdown(
+                            title: t.settings.prefLabels.penSlideDownAction,
+                            subtitle:
+                                t.settings.prefDescriptions.penSlideDownAction,
+                            icon: Icons.swipe_down,
+                            pref: stows.penSlideDownAction,
+                          ),
+                        ],
+                      ],
+                    );
+                  },
+                ),
+
                 SettingsSubtitle(subtitle: t.settings.prefCategories.editor),
                 SettingsSelection(
                   title: t.settings.prefLabels.editorToolbarAlignment,
@@ -620,5 +667,58 @@ class _SettingsPageState extends State<SettingsPage> {
     stows.locale.removeListener(onChanged);
     UpdateManager.status.removeListener(onChanged);
     super.dispose();
+  }
+}
+
+/// A dropdown that maps a pen-body gesture to a [PenAction].
+class _PenActionDropdown extends StatelessWidget {
+  const new({
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    required this.pref,
+  });
+
+  final String title;
+  final String subtitle;
+  final Object icon;
+  final Stow<dynamic, PenAction, dynamic> pref;
+
+  @override
+  Widget build(BuildContext context) {
+    final t = context.t;
+    return SettingsDropdown<PenAction>(
+      title: title,
+      subtitle: subtitle,
+      icon: icon,
+      pref: pref,
+      options: PenAction.values
+          .map(
+            (action) => ToggleButtonsOption<PenAction>(
+              action,
+              Text(_label(t, action), textAlign: TextAlign.center),
+            ),
+          )
+          .toList(),
+    );
+  }
+
+  static String _label(Translations t, PenAction action) {
+    final actions = t.settings.penActions;
+    return switch (action) {
+      .none => actions.none,
+      .temporaryEraser => actions.temporaryEraser,
+      .toggleEraser => actions.toggleEraser,
+      .openPenOptions => actions.openPenOptions,
+      .openColorPicker => actions.openColorPicker,
+      .undo => actions.undo,
+      .redo => actions.redo,
+      .previousPage => actions.previousPage,
+      .nextPage => actions.nextPage,
+      .toggleFingerDrawing => actions.toggleFingerDrawing,
+      .toggleFullscreen => actions.toggleFullscreen,
+      .laserPointer => actions.laserPointer,
+      .selectTool => actions.selectTool,
+    };
   }
 }

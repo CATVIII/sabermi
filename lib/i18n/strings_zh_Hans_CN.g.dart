@@ -103,6 +103,7 @@ class Translations$settings$zh_Hans_CN extends Translations$settings$en {
 	final TranslationsZhHansCn _root; // ignore: unused_field
 
 	// Translations
+	@override late final Translations$settings$penActions$zh_Hans_CN penActions = Translations$settings$penActions$zh_Hans_CN.internal(_root);
 	@override late final Translations$settings$prefCategories$zh_Hans_CN prefCategories = Translations$settings$prefCategories$zh_Hans_CN.internal(_root);
 	@override late final Translations$settings$prefLabels$zh_Hans_CN prefLabels = Translations$settings$prefLabels$zh_Hans_CN.internal(_root);
 	@override late final Translations$settings$prefDescriptions$zh_Hans_CN prefDescriptions = Translations$settings$prefDescriptions$zh_Hans_CN.internal(_root);
@@ -191,7 +192,7 @@ class Translations$appInfo$zh_Hans_CN extends Translations$appInfo$en {
 	final TranslationsZhHansCn _root; // ignore: unused_field
 
 	// Translations
-	@override String licenseNotice({required Object buildYear}) => 'Saber  版权所有 © 2022-${buildYear}  Adil Hanney\n本程序不附带任何担保。这是自由软件，您可以在特定条件下重新分发它。';
+	@override String licenseNotice({required Object buildYear}) => 'Saber  版权所有 © 2022-${buildYear}  Adil Hanney\nSaberMI 修改部分  版权所有 © 2026  Cat8th\n本程序不附带任何担保。这是自由软件，您可以在特定条件下重新分发它。';
 	@override String get debug => 'DEBUG';
 	@override String get sponsorButton => '点击此处赞助我或购买更多存储空间';
 	@override String get licenseButton => '点击此处查看更多许可证信息';
@@ -412,6 +413,28 @@ class Translations$sentry$consent$zh_Hans_CN extends Translations$sentry$consent
 	@override late final Translations$sentry$consent$answers$zh_Hans_CN answers = Translations$sentry$consent$answers$zh_Hans_CN.internal(_root);
 }
 
+// Path: settings.penActions
+class Translations$settings$penActions$zh_Hans_CN extends Translations$settings$penActions$en {
+	Translations$settings$penActions$zh_Hans_CN.internal(TranslationsZhHansCn root) : this._root = root, super.internal(root);
+
+	final TranslationsZhHansCn _root; // ignore: unused_field
+
+	// Translations
+	@override String get none => '不执行操作';
+	@override String get temporaryEraser => '按住时切换为橡皮（松开还原）';
+	@override String get toggleEraser => '按一下切换（笔 ↔ 橡皮）';
+	@override String get openPenOptions => '打开画笔设置';
+	@override String get openColorPicker => '打开调色板';
+	@override String get undo => '撤销';
+	@override String get redo => '重做';
+	@override String get previousPage => '上一页';
+	@override String get nextPage => '下一页';
+	@override String get toggleFingerDrawing => '切换手指绘图';
+	@override String get toggleFullscreen => '切换全屏';
+	@override String get laserPointer => '激光笔';
+	@override String get selectTool => '选择工具';
+}
+
 // Path: settings.prefCategories
 class Translations$settings$prefCategories$zh_Hans_CN extends Translations$settings$prefCategories$en {
 	Translations$settings$prefCategories$zh_Hans_CN.internal(TranslationsZhHansCn root) : this._root = root, super.internal(root);
@@ -421,6 +444,7 @@ class Translations$settings$prefCategories$zh_Hans_CN extends Translations$setti
 	// Translations
 	@override String get general => '通用';
 	@override String get writing => '书写';
+	@override String get stylus => '小米焦点触控笔 Pro 手势';
 	@override String get editor => '编辑器';
 	@override String get performance => '性能';
 	@override String get advanced => '高级';
@@ -451,6 +475,11 @@ class Translations$settings$prefLabels$zh_Hans_CN extends Translations$settings$
 	@override String get disableEraserAfterUse => '自动禁用橡皮擦';
 	@override String get hideFingerDrawingToggle => '隐藏 切换手指绘图';
 	@override String get autoDisableFingerDrawingWhenStylusDetected => '自动禁用手指绘图';
+	@override String get miuiPenGestures => '小米焦点触控笔 Pro 手势';
+	@override String get penPinchAction => '轻捏笔身';
+	@override String get penTapAction => '双击笔身';
+	@override String get penSlideUpAction => '笔身上滑';
+	@override String get penSlideDownAction => '笔身下滑';
 	@override String get editorPromptRename => '提示您重命名新笔记';
 	@override String get recentColorsDontSavePresets => '不在最近使用的颜色中保存预设颜色';
 	@override String get recentColorsLength => '要存储多少种最近的颜色';
@@ -477,6 +506,11 @@ class Translations$settings$prefDescriptions$zh_Hans_CN extends Translations$set
 	@override String get maxImageSize => '更大的图片将会被压缩';
 	@override late final Translations$settings$prefDescriptions$hideFingerDrawing$zh_Hans_CN hideFingerDrawing = Translations$settings$prefDescriptions$hideFingerDrawing$zh_Hans_CN.internal(_root);
 	@override String get autoDisableFingerDrawingWhenStylusDetected => '当检测到手写笔时关闭手指绘图';
+	@override String get miuiPenGestures => '用笔身的轻捏、双击和滑动来操作编辑器。需要小米焦点触控笔 Pro。';
+	@override String get penPinchAction => '轻捏笔身。选「按住时切换」时只在轻捏期间生效。';
+	@override String get penTapAction => '双击笔身。';
+	@override String get penSlideUpAction => '在笔身上向上滑动。';
+	@override String get penSlideDownAction => '在笔身上向下滑动。';
 	@override String get editorPromptRename => '您可以总是稍后重命名笔记';
 	@override String get printPageIndicators => '在导出中显示页码';
 	@override String get autosave => '短暂延迟后自动保存，或永不保存';
