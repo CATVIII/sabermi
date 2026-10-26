@@ -1,4 +1,4 @@
-# Miscellaneous
+﻿# Miscellaneous
 *.class
 *.log
 *.pyc
@@ -66,3 +66,19 @@ coverage/
 
 # temp files for fdroid pubspec.lock
 /tmpfdroid/
+# ---- SaberMI hardening ----
+# Build outputs
+*.apk
+*.aab
+*.ipa
+/build-*.apk
+
+# Local signing material - never commit
+*.keystore
+*.jks
+key.properties
+
+# Tooling noise
+.cxx/
+*.hprof
+.idea/

@@ -7,9 +7,9 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 abstract class SentryFilter {
   /// Patterns to redact in Sentry events.
   ///
-  /// Note: When editing these, also update the server-side filters in
-  /// https://saber-yf.sentry.io/settings/security-and-privacy/
-  /// so users on older versions of Saber still get their data scrubbed.
+  /// SaberMI never uploads events (see `sentry_init.dart`), so these only
+  /// matter if a downstream packager re-enables error reporting. They are kept
+  /// so that doing so cannot leak user paths or credentials by default.
   @visibleForTesting
   static final replacements = <Pattern, String>{
     // SaberSyncFile(...)

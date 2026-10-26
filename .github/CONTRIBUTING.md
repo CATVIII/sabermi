@@ -1,4 +1,4 @@
-# Contributing
+﻿# Contributing
 
 Thanks for your interest in contributing to Saber.
 I maintain this project in limited spare time, so the contribution rules below are strict by necessity.
@@ -9,7 +9,7 @@ I maintain this project in limited spare time, so the contribution rules below a
 
 I am currently only accepting tiny focused pull requests, for example:
 - A specific bug fix
-- Completing one of the ["help wanted" issues](https://github.com/saber-notes/saber/issues?q=state%3Aopen%20label%3A%22help%20wanted%22)
+- Completing one of the ["help wanted" issues](https://github.com/CATVIII/sabermi/issues?q=state%3Aopen%20label%3A%22help%20wanted%22)
 - Translations
 
 If your pull request makes multiple changes, try to split it into multiple separate pull requests. I'd much prefer ten 10-line PRs over one 100-line PR.

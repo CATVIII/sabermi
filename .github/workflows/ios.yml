@@ -96,15 +96,6 @@ jobs:
       - name: Restore keychain
         run: keychain use-login
 
-      - name: Upload debug files to Sentry
-        run: |
-          brew install sentry-cli
-          sentry-cli debug-files upload --include-sources build/ios/
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: saber-yf
-          SENTRY_PROJECT: saber
-
       - name: Upload artifact
         uses: actions/upload-artifact@v7
         with:

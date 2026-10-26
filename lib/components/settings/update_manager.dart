@@ -15,11 +15,14 @@ import 'package:saber/data/version.dart' as version;
 abstract class UpdateManager {
   static final log = Logger('UpdateManager');
 
+  // SaberMI: point the update check at this fork, not upstream Saber. Leaving
+  // these URLs on `saber-notes/saber` would offer the user the *original* app's
+  // releases, which is both wrong and uninstallable (different signing key).
   static final Uri versionUrl = Uri.parse(
-    'https://raw.githubusercontent.com/saber-notes/saber/main/lib/data/version.dart',
+    'https://raw.githubusercontent.com/CATVIII/sabermi/main/lib/data/version.dart',
   );
   static final Uri apiUrl = Uri.parse(
-    'https://api.github.com/repos/saber-notes/saber/releases/latest',
+    'https://api.github.com/repos/CATVIII/sabermi/releases/latest',
   );
 
   /// The availability of an update.
@@ -211,7 +214,7 @@ abstract class UpdateManager {
     assert(newestVersion != null);
 
     final url =
-        'https://raw.githubusercontent.com/saber-notes/saber/main/'
+        'https://raw.githubusercontent.com/CATVIII/sabermi/main/'
         'metadata/$localeCode/changelogs/$newestVersion.txt';
     log.info('Downloading changelog from $url');
 

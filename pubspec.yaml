@@ -294,8 +294,8 @@ icons_launcher:
       enable: true
       image_path: "assets/icon/icon_macos.png"
 
-sentry:
-  upload_debug_symbols: true
-  upload_source_maps: true
-  project: saber
-  org: saber-yf
+# SaberMI: the upstream `sentry:` block (org `saber-yf`, project `saber`) has
+# been removed on purpose. Leaving it in place would let a build with
+# SENTRY_AUTH_TOKEN set upload this fork's debug symbols and source maps to the
+# upstream project. Crash reporting is disabled at runtime as well - see
+# lib/data/sentry/sentry_init.dart.

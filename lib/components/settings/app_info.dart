@@ -11,17 +11,19 @@ import 'package:saber/i18n/strings.g.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class const AppInfo({super.key}) extends StatelessWidget {
+  /// Kept pointing at the original author: SaberMI is a fork and has no
+  /// donation channel of its own, and nearly all of this code is his work.
   static final Uri sponsorUrl = Uri.parse(
     'https://github.com/sponsors/adil192',
   );
   static final Uri privacyPolicyUrl = Uri.parse(
-    'https://saber.adil.hanney.org/privacy-policy/',
+    'https://github.com/CATVIII/sabermi/blob/main/privacy_policy.md',
   );
   static final Uri licenseUrl = Uri.parse(
-    'https://github.com/saber-notes/saber/blob/main/LICENSE.md',
+    'https://github.com/CATVIII/sabermi/blob/main/LICENSE.md',
   );
   static final Uri releasesUrl = Uri.parse(
-    'https://github.com/saber-notes/saber/releases',
+    'https://github.com/CATVIII/sabermi/releases',
   );
 
   static String get info => [

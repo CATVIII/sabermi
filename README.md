@@ -1,37 +1,22 @@
-# <img src="https://github.com/saber-notes/saber/raw/main/assets/icon/icon.png" width="30" height="30" alt="Logo"> Saber
+# <img src="https://github.com/CATVIII/sabermi/raw/main/assets/icon/icon.png" width="30" height="30" alt="Logo"> SaberMI
 
-[<img src='https://github.com/saber-notes/saber/blob/main/assets_raw/badges/google-play-badge.svg'
-    alt='Get it on Google Play'
-    height=50>][google_play]
-&nbsp;
-[<img src="https://github.com/saber-notes/saber/blob/main/assets_raw/badges/f-droid-badge.svg"
-    alt="Get it on F-Droid"
-    height=50>][f-droid]
-&nbsp;
-[<img src="https://github.com/saber-notes/saber/blob/main/assets_raw/badges/app-store-badge.svg"
-    alt="Download on the App Store"
-    height=50>][app_store]
-&nbsp;
-[<img src="https://github.com/saber-notes/saber/blob/main/assets_raw/badges/windows-badge.png"
-    alt="Download for Windows"
-    height=50>][download_windows]
-&nbsp;
-[<img src="https://github.com/saber-notes/saber/blob/main/assets_raw/badges/flathub-badge.svg"
-    alt="Download on Flathub"
-    height=50>][flathub]
-&nbsp;
-[<img src="https://github.com/saber-notes/saber/blob/main/assets_raw/badges/appimage-logo.svg"
-    alt="Get it as an AppImage"
-    height=50>][download_appimage]
+> **This is a fork of Saber.** SaberMI is a modified version of
+> [Saber](https://github.com/saber-notes/saber), forked from v1.37.0
+> (commit `57e62dc`). It is **not** the official Saber build and is not endorsed
+> by the original author. See [NOTICE.md](NOTICE.md) for the full list of
+> changes.
+>
+> SaberMI is free software, licensed under the GNU General Public License v3.0 —
+> the same licence as upstream.
 
-[English](https://github.com/saber-notes/saber/blob/main/README.md) |
-[čeština](https://github.com/saber-notes/saber/blob/main/README-cs.md) |
-[Deutsch](https://github.com/saber-notes/saber/blob/main/README-de.md) |
-[中文 (简体中文, 中国)](https://github.com/saber-notes/saber/blob/main/README-zh-CN.md) |
-[中文 (繁體, 台灣)](https://github.com/saber-notes/saber/blob/main/README-zh-TW.md) |
-[العربية](https://github.com/saber-notes/saber/blob/main/README-ar.md) |
-[Tiếng Việt](https://github.com/saber-notes/saber/blob/main/README-vi.md) |
-[Bahasa Indonesia](https://github.com/saber-notes/saber/blob/main/README-id.md)
+[English](https://github.com/CATVIII/sabermi/blob/main/README.md) |
+[čeština](https://github.com/CATVIII/sabermi/blob/main/README-cs.md) |
+[Deutsch](https://github.com/CATVIII/sabermi/blob/main/README-de.md) |
+[中文 (简体中文, 中国)](https://github.com/CATVIII/sabermi/blob/main/README-zh-CN.md) |
+[中文 (繁體, 台灣)](https://github.com/CATVIII/sabermi/blob/main/README-zh-TW.md) |
+[العربية](https://github.com/CATVIII/sabermi/blob/main/README-ar.md) |
+[Tiếng Việt](https://github.com/CATVIII/sabermi/blob/main/README-vi.md) |
+[Bahasa Indonesia](https://github.com/CATVIII/sabermi/blob/main/README-id.md)
 
 Saber is the notes app built for handwriting.
 
@@ -51,24 +36,17 @@ Saber has everything you need to keep your notes organized. Create folders insid
 
 Discover a whole new way to capture and organize your thoughts with Saber. Whether you're a student, professional, or creative mind, Saber is your trusted companion for digital handwriting. Download now and let your ideas flow freely!
 
-[![Latest release](https://img.shields.io/github/v/release/saber-notes/saber)](https://github.com/saber-notes/saber/releases/latest)
-[![Flathub](https://img.shields.io/flathub/v/com.adilhanney.saber)](https://flathub.org/apps/details/com.adilhanney.saber)
-[![F-Droid](https://img.shields.io/f-droid/v/com.adilhanney.saber)](https://f-droid.org/en/packages/com.adilhanney.saber/)
-[![GitHub downloads](https://img.shields.io/github/downloads/saber-notes/saber/total?label=GitHub%20downloads)](https://github.com/saber-notes/saber/releases)
-[![Flathub downloads](https://img.shields.io/flathub/downloads/com.adilhanney.saber?label=Flathub%20downloads)](https://flathub.org/apps/details/com.adilhanney.saber)
 [![GitHub Sponsors](https://img.shields.io/github/sponsors/adil192)](https://github.com/sponsors/adil192)
-[![License](https://img.shields.io/github/license/saber-notes/saber)](https://github.com/saber-notes/saber/blob/main/LICENSE.md)
-[![Translation status](https://hosted.weblate.org/widget/saber-notes/saber/svg-badge.svg)](https://hosted.weblate.org/engage/saber-notes/)
-[![Codecov](https://codecov.io/gh/saber-notes/saber/branch/main/graph/badge.svg?token=EGQSN0THW2)](https://codecov.io/gh/saber-notes/saber)
+[![License](https://img.shields.io/github/license/CATVIII/sabermi)](https://github.com/CATVIII/sabermi/blob/main/LICENSE.md)
 
 <details open>
 <summary>Tap to show/hide screenshots</summary>
 
 <div>
-<img src="https://github.com/saber-notes/saber/raw/main/metadata/en-US/images/phoneScreenshots/1_home.png" width="180">
-<img src="https://github.com/saber-notes/saber/raw/main/metadata/en-US/images/phoneScreenshots/2_editor.png" width="180">
-<img src="https://github.com/saber-notes/saber/raw/main/metadata/en-US/images/phoneScreenshots/3_login.png" width="180">
-<img src="https://github.com/saber-notes/saber/raw/main/metadata/en-US/images/phoneScreenshots/4_settings.png" width="180">
+<img src="https://github.com/CATVIII/sabermi/raw/main/metadata/en-US/images/phoneScreenshots/1_home.png" width="180">
+<img src="https://github.com/CATVIII/sabermi/raw/main/metadata/en-US/images/phoneScreenshots/2_editor.png" width="180">
+<img src="https://github.com/CATVIII/sabermi/raw/main/metadata/en-US/images/phoneScreenshots/3_login.png" width="180">
+<img src="https://github.com/CATVIII/sabermi/raw/main/metadata/en-US/images/phoneScreenshots/4_settings.png" width="180">
 </div>
 </details>
 
@@ -78,22 +56,31 @@ Please see [#1 Saber progress][progress].
 
 ## Install
 
-Please see
-[Install Saber](https://github.com/saber-notes/saber/wiki/install)
-on the wiki.
+SaberMI is distributed as an APK built from source; it is not on Google
+Play, F-Droid, the App Store, Flathub or snapcraft.
+
+Grab the latest build from
+[Releases](https://github.com/CATVIII/sabermi/releases).
+
+It installs alongside the official Saber (`com.sabermi` vs
+`com.adilhanney.saber`), so both can be kept side by side.
 
 ## Build from source
 
-Please see
-[Build Saber](https://github.com/saber-notes/saber/wiki/build)
-on the wiki.
+The upstream build instructions apply unchanged:
+[Build Saber](https://github.com/saber-notes/saber/wiki/build).
+
+Differences in this fork: the extra local plugin in
+`packages/miui_penengine`, and no crash or build-symbol upload anywhere
+(see [NOTICE.md](NOTICE.md)).
 
 ## Links
 
-- [Nextcloud server][nextcloud]
+- [Releases][releases]
+- [Issues][issues]
 - [Privacy policy][privacy]
 - [License][license]
-- [Releases][releases]
+- [Nextcloud server][nextcloud] (upstream service)
 
 ## Translating
 
@@ -122,21 +109,11 @@ Please see
 on the wiki.
 
 
-[f-droid]: https://f-droid.org/packages/com.adilhanney.saber/
-[flathub]: https://flathub.org/apps/details/com.adilhanney.saber
-[google_play]: https://play.google.com/store/apps/details?id=com.adilhanney.saber
-[snap]: https://snapcraft.io/saber
-[app_store]: https://apps.apple.com/us/app/saber/id1671523739
-[download_windows]: https://github.com/saber-notes/saber/releases/download/v1.37.0/SaberInstaller_v1.37.0.exe
-[download_appimage]: https://github.com/saber-notes/saber/releases/download/v1.37.0/Saber-1.37.0-x86_64.AppImage
-
 [nextcloud]: https://nc.saber.adil.hanney.org/
 
-[privacy]: https://github.com/saber-notes/saber/blob/main/privacy_policy.md
-[license]: https://github.com/saber-notes/saber/blob/main/LICENSE.md
+[privacy]: https://github.com/CATVIII/sabermi/blob/main/privacy_policy.md
+[license]: https://github.com/CATVIII/sabermi/blob/main/LICENSE.md
 
-[releases]: https://github.com/saber-notes/saber/releases
-[issues]: https://github.com/saber-notes/saber/issues
+[releases]: https://github.com/CATVIII/sabermi/releases
+[issues]: https://github.com/CATVIII/sabermi/issues
 [progress]: https://github.com/saber-notes/saber/discussions/1
-
-[f-droid-manifest]: https://gitlab.com/fdroid/fdroiddata/-/blob/master/metadata/com.adilhanney.saber.yml
