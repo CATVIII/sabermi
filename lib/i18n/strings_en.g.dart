@@ -664,6 +664,9 @@ class Translations$settings$penActions$en {
 
 	/// en: 'Select tool'
 	String get selectTool => 'Select tool';
+
+	/// en: 'Open colour palette and pen settings'
+	String get openPenOptionsAndColors => 'Open colour palette and pen settings';
 }
 
 // Path: settings.prefCategories

@@ -278,6 +278,28 @@ class Stows {
     codec: PenAction.codec,
     volatile: !_isOnMainIsolate,
   );
+
+  /// Moves saved pen gestures that used the old separate "open pen options" and
+  /// "open colour picker" actions to the merged action.
+  ///
+  /// [PenAction] values are stored by index, so the old values remain in the
+  /// enum; this keeps existing gestures working after the merge.
+  Future<void> migrateLegacyPenActions() async {
+    final prefs = [
+      penPinchAction,
+      penTapAction,
+      penSlideUpAction,
+      penSlideDownAction,
+    ];
+    await Future.wait(prefs.map((pref) => pref.waitUntilRead()));
+    for (final pref in prefs) {
+      if (pref.value == PenAction.openPenOptions ||
+          pref.value == PenAction.openColorPicker) {
+        pref.value = PenAction.openPenOptionsAndColors;
+      }
+    }
+  }
+
   static StrokeOptions _strokeOptionsFromJson(Object json) =>
       StrokeOptions.fromJson(json as Map<String, dynamic>);
   final lastFountainPenOptions = PlainStow.json(

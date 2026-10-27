@@ -107,6 +107,7 @@ settings:
     toggleFullscreen: 切换全屏
     laserPointer: 激光笔
     selectTool: 选择工具
+    openPenOptionsAndColors: 打开调色板和画笔设置
   prefCategories:
     general: 通用
     writing: 书写

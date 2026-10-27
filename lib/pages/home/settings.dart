@@ -692,7 +692,7 @@ class _PenActionDropdown extends StatelessWidget {
       subtitle: subtitle,
       icon: icon,
       pref: pref,
-      options: PenAction.values
+      options: PenAction.selectable
           .map(
             (action) => ToggleButtonsOption<PenAction>(
               action,
@@ -711,6 +711,7 @@ class _PenActionDropdown extends StatelessWidget {
       .toggleEraser => actions.toggleEraser,
       .openPenOptions => actions.openPenOptions,
       .openColorPicker => actions.openColorPicker,
+      .openPenOptionsAndColors => actions.openPenOptionsAndColors,
       .undo => actions.undo,
       .redo => actions.redo,
       .previousPage => actions.previousPage,

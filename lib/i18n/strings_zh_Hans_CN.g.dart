@@ -433,6 +433,7 @@ class Translations$settings$penActions$zh_Hans_CN extends Translations$settings$
 	@override String get toggleFullscreen => '切换全屏';
 	@override String get laserPointer => '激光笔';
 	@override String get selectTool => '选择工具';
+	@override String get openPenOptionsAndColors => '打开调色板和画笔设置';
 }
 
 // Path: settings.prefCategories

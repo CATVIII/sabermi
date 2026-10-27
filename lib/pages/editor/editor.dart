@@ -301,9 +301,9 @@ class EditorState extends State<Editor> {
       case .toggleEraser:
         selectTool(Eraser());
       case .openPenOptions:
-        toggleToolOptionsPanel();
       case .openColorPicker:
-        showColorOptions.value = !showColorOptions.value;
+      case .openPenOptionsAndColors:
+        togglePenOptionsAndColors();
       case .undo:
         undo();
       case .redo:
@@ -326,16 +326,18 @@ class EditorState extends State<Editor> {
     }
   }
 
-  /// Opens (or closes) the options panel matching the current tool.
-  void toggleToolOptionsPanel() {
+  /// Opens (or closes) the options panel matching the current tool together
+  /// with the colour bar, so a single pen-body gesture shows both at once.
+  void togglePenOptionsAndColors() {
     final target = switch (currentTool) {
       Highlighter() => ToolOptions.highlighter,
       Pencil() => ToolOptions.pencil,
       _ => ToolOptions.pen,
     };
-    toolOptionsType.value = toolOptionsType.value == target
-        ? ToolOptions.hide
-        : target;
+    final bothOpen = toolOptionsType.value == target && showColorOptions.value;
+
+    toolOptionsType.value = bothOpen ? ToolOptions.hide : target;
+    showColorOptions.value = !bothOpen;
   }
 
   void _scrollToRelativePage(int delta) {

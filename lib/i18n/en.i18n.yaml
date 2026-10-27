@@ -107,6 +107,7 @@ settings:
     toggleFullscreen: Toggle fullscreen
     laserPointer: Laser pointer
     selectTool: Select tool
+    openPenOptionsAndColors: Open colour palette and pen settings
   prefCategories:
     general: General
     writing: Writing

@@ -16,31 +16,16 @@ or supported by the original author.
 
 ## Changes in this fork
 
-1. **Xiaomi Focus Pen Pro gesture support** — new local Flutter plugin
-   `packages/miui_penengine`, plus editor, preferences and settings integration.
-   The pen body's *pinch*, *double tap*, *slide up* and *slide down* gestures can
-   be mapped to editor actions (toggle eraser, page navigation, undo/redo, …).
-2. **Renamed to SaberMI**, with `applicationId` `com.sabermi`, so the fork can be
-   installed alongside the official Saber.
-3. **Distribution channels removed from the README** — the fork is not published
-   on Google Play, F-Droid, the App Store, Flathub or snapcraft.
-4. **Hardened `.gitignore`** for local build artefacts and signing material.
-5. **"Invert colors" applies to the whole document** — the switch in the editor
-   menu now flips `invertible` on every page's background image (for example,
-   all pages of an imported PDF) instead of only the current page. Images that
-   are not page backgrounds keep their own switch.
+SaberMI adds Xiaomi Focus Pen Pro pen-body gesture support and is renamed to
+SaberMI (`applicationId` `com.sabermi`) so that it can be installed alongside
+the official Saber. It also contains smaller UI and behaviour changes.
 
 Nothing has been removed from the upstream source; all upstream copyright
 notices are retained verbatim.
 
-### On the Xiaomi pen integration
-
-The gesture protocol was reverse engineered from the device and reimplemented as
-a plain AIDL client
-(`packages/miui_penengine/android/src/main/kotlin/.../PencilEngineClient.kt`).
-**No proprietary Xiaomi binary — no SDK `.aar`, `.jar` or `.so` — is bundled with
-this fork.** Bundling one would have made the combined work non-distributable
-under the GPL, so this matters for licence compliance.
+The Xiaomi pen protocol was reverse engineered from the device and reimplemented
+from scratch. **No proprietary Xiaomi binary (no SDK `.aar`, `.jar` or `.so`) is
+bundled with this fork.**
 
 ---
 

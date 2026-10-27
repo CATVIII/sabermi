@@ -20,9 +20,16 @@ enum PenAction {
   toggleEraser,
 
   /// Open the pen / highlighter / pencil options panel.
+  ///
+  /// Kept for backward compatibility: the settings dropdown no longer offers
+  /// this action, and saved gestures are migrated to
+  /// [openPenOptionsAndColors]. It must keep its position because [codec]
+  /// stores enum values by index.
   openPenOptions,
 
   /// Open the colour picker bar.
+  ///
+  /// Kept for backward compatibility, like [openPenOptions].
   openColorPicker,
 
   undo,
@@ -44,9 +51,32 @@ enum PenAction {
   laserPointer,
 
   /// Switch to the selection tool.
-  selectTool;
+  selectTool,
+
+  /// Open the colour picker bar and the current tool's options panel together.
+  openPenOptionsAndColors;
 
   static const codec = EnumCodec(values);
+
+  /// The actions offered by the settings dropdown.
+  ///
+  /// [openPenOptions] and [openColorPicker] were merged into
+  /// [openPenOptionsAndColors]. They stay in [values] so that previously saved
+  /// preferences keep their indices, but they are no longer selectable.
+  static const List<PenAction> selectable = [
+    none,
+    temporaryEraser,
+    toggleEraser,
+    openPenOptionsAndColors,
+    undo,
+    redo,
+    previousPage,
+    nextPage,
+    toggleFingerDrawing,
+    toggleFullscreen,
+    laserPointer,
+    selectTool,
+  ];
 
   /// Whether this action needs both the down and the up half of the gesture.
   bool get isHoldAction => this == .temporaryEraser;
