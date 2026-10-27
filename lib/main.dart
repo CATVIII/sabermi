@@ -97,6 +97,7 @@ Future<void> appRunner(List<String> args) async {
     stows.locale.waitUntilRead(),
     stows.url.waitUntilRead(),
     stows.allowInsecureConnections.waitUntilRead(),
+    stows.waitUntilPenPropertiesRead(),
     stows.migrateLegacyPenActions(),
     PencilShader.init(),
     Printing.info().then((info) {

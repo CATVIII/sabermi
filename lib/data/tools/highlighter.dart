@@ -14,7 +14,7 @@ class Highlighter extends Pen {
         icon: highlighterIcon,
         options: stows.lastHighlighterOptions.value,
         pressureEnabled: false,
-        color: Colors.yellow.withAlpha(Highlighter.alpha),
+        color: Color(stows.lastHighlighterColor.value).withAlpha(alpha),
         toolId: .highlighter,
       );
 

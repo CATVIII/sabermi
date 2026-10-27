@@ -1840,11 +1840,13 @@ class EditorState extends State<Editor> {
               updateColorBar(color);
 
               if (currentTool is Highlighter) {
-                (currentTool as Highlighter).color = color.withAlpha(
-                  Highlighter.alpha,
-                );
+                final highlighter = currentTool as Highlighter;
+                highlighter.color = color.withAlpha(Highlighter.alpha);
+                highlighter.saveColor();
               } else if (currentTool is Pen) {
-                (currentTool as Pen).color = color;
+                final pen = currentTool as Pen;
+                pen.color = color;
+                pen.saveColor();
               } else if (currentTool is Select) {
                 // Changes color of selected strokes
                 final select = currentTool as Select;
@@ -2356,12 +2358,18 @@ class EditorState extends State<Editor> {
 
     _removeKeybindings();
 
-    // manually save pen properties since the listeners don't fire if a property is changed
-    stows.lastFountainPenOptions.notifyListeners();
-    stows.lastBallpointPenOptions.notifyListeners();
-    stows.lastHighlighterOptions.notifyListeners();
-    stows.lastPencilOptions.notifyListeners();
-    stows.lastShapePenOptions.notifyListeners();
+    // manually save pen properties since a change might not have ended with a
+    // drag-end event (e.g. the editor was closed while dragging)
+    for (final pen in <Pen>{
+      Pen.currentPen,
+      Pencil.currentPencil,
+      Highlighter.currentHighlighter,
+      if (currentTool is Pen) currentTool as Pen,
+      if (_lastNonEraserTool is Pen) _lastNonEraserTool as Pen,
+    }) {
+      pen.saveOptions();
+      pen.saveColor();
+    }
 
     _penGestureSubscription?.cancel();
     _penGestureSubscription = null;

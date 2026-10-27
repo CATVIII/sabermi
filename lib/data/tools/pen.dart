@@ -3,12 +3,14 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:perfect_freehand/perfect_freehand.dart';
 import 'package:saber/components/canvas/_stroke.dart';
 import 'package:saber/data/editor/page.dart';
+import 'package:saber/data/extensions/change_notifier_extensions.dart';
 import 'package:saber/data/prefs.dart';
 import 'package:saber/data/tools/_tool.dart';
 import 'package:saber/data/tools/highlighter.dart';
 import 'package:saber/data/tools/pencil.dart';
 import 'package:saber/i18n/strings.g.dart';
 import 'package:sbn/tool_id.dart';
+import 'package:stow_plain/stow_plain.dart';
 
 class Pen extends Tool {
   @protected
@@ -81,6 +83,39 @@ class Pen extends Tool {
   /// that mirrors the brush appearance (like the stylus cursor) listens to
   /// this instead of recomputing on every pointer event.
   static final optionsChanged = ChangeNotifier();
+
+  /// The stow that stores this pen's options.
+  PlainStow<StrokeOptions> get _optionsStow => switch (toolId) {
+    ToolId.fountainPen => stows.lastFountainPenOptions,
+    ToolId.ballpointPen => stows.lastBallpointPenOptions,
+    ToolId.highlighter => stows.lastHighlighterOptions,
+    ToolId.pencil => stows.lastPencilOptions,
+    ToolId.shapePen => stows.lastShapePenOptions,
+    _ => throw ArgumentError.value(toolId, 'toolId', 'Not a pen'),
+  };
+
+  /// The stow that stores this pen's colour.
+  PlainStow<int> get _colorStow => switch (toolId) {
+    ToolId.fountainPen => stows.lastFountainPenColor,
+    ToolId.ballpointPen => stows.lastBallpointPenColor,
+    ToolId.highlighter => stows.lastHighlighterColor,
+    ToolId.pencil => stows.lastPencilColor,
+    ToolId.shapePen => stows.lastShapePenColor,
+    _ => throw ArgumentError.value(toolId, 'toolId', 'Not a pen'),
+  };
+
+  /// Persists the current [options].
+  void saveOptions() {
+    final stow = _optionsStow;
+    stow.value = options;
+    // `StrokeOptions` compares by value and [options] is usually the very
+    // object stored in the stow, so the setter above can be a no-op. Notifying
+    // forces the stow to write the current value.
+    stow.notifyListenersPlease();
+  }
+
+  /// Persists the current [color].
+  void saveColor() => _colorStow.value = color.toARGB32();
 
   void onDragStart(
     Offset position,

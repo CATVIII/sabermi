@@ -365,6 +365,24 @@ class Stows {
         Colors.black.toARGB32(),
         volatile: !_isOnMainIsolate,
       );
+
+  /// Waits until the saved pen options and colours have been read.
+  ///
+  /// [Pen] instances copy these values when they are constructed, so they must
+  /// be read before the first pen is created.
+  Future<void> waitUntilPenPropertiesRead() => Future.wait([
+    lastFountainPenOptions.waitUntilRead(),
+    lastBallpointPenOptions.waitUntilRead(),
+    lastHighlighterOptions.waitUntilRead(),
+    lastPencilOptions.waitUntilRead(),
+    lastShapePenOptions.waitUntilRead(),
+    lastFountainPenColor.waitUntilRead(),
+    lastBallpointPenColor.waitUntilRead(),
+    lastHighlighterColor.waitUntilRead(),
+    lastPencilColor.waitUntilRead(),
+    lastShapePenColor.waitUntilRead(),
+  ]);
+
   final lastBackgroundPattern = PlainStow(
     'lastBackgroundPattern',
     CanvasBackgroundPattern.none,

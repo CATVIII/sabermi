@@ -28,6 +28,22 @@ String _prettyNum(double num) {
 
 class _SizePickerState extends State<SizePicker> {
   @override
+  void didUpdateWidget(SizePicker oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.pen != widget.pen) {
+      // The panel was switched to another pen; persist the old one's size.
+      oldWidget.pen.saveOptions();
+    }
+  }
+
+  @override
+  void dispose() {
+    // Catch any size change that didn't end with a drag-end event.
+    widget.pen.saveOptions();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final colorScheme = ColorScheme.of(context);
     return Flex(
@@ -103,6 +119,16 @@ class _SizeSlider extends StatelessWidget {
           ? (details) =>
                 onDrag(details.localPosition.dy / SizePicker.largeLength)
           : null,
+      onHorizontalDragEnd: axis == Axis.horizontal
+          ? (_) => pen.saveOptions()
+          : null,
+      onHorizontalDragCancel: axis == Axis.horizontal
+          ? pen.saveOptions
+          : null,
+      onVerticalDragEnd: axis == Axis.vertical
+          ? (_) => pen.saveOptions()
+          : null,
+      onVerticalDragCancel: axis == Axis.vertical ? pen.saveOptions : null,
       child: RotatedBox(
         quarterTurns: axis == Axis.horizontal ? 0 : 1,
         child: CustomPaint(
