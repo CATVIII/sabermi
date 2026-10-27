@@ -62,7 +62,7 @@ class _InnerCanvasState extends State<InnerCanvas> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final brightness = theme.brightness;
-    final invert = stows.editorAutoInvert.value && brightness == .dark;
+    final themeInvert = stows.editorAutoInvert.value && brightness == .dark;
     final Color backgroundColor =
         widget.coreInfo.backgroundColor ?? InnerCanvas.defaultBackgroundColor;
 
@@ -71,6 +71,15 @@ class _InnerCanvasState extends State<InnerCanvas> {
     }
 
     final page = widget.coreInfo.pages[widget.pageIndex];
+
+    /// Whether this page is actually rendered with inverted colours.
+    ///
+    /// A page with a non-invertible background image stays light even in dark
+    /// mode, so its strokes, text and the highlighter's blend mode must use
+    /// light colours too. (The highlighter uses [BlendMode.darken] on light
+    /// pages and [BlendMode.lighten] on dark ones; using the wrong one makes
+    /// the stroke invisible.)
+    final invert = themeInvert && (page.backgroundImage?.invertible ?? true);
 
     final quillEditor = widget.coreInfo.pages.isNotEmpty
         ? QuillEditor(
