@@ -25,6 +25,10 @@ or supported by the original author.
 3. **Distribution channels removed from the README** — the fork is not published
    on Google Play, F-Droid, the App Store, Flathub or snapcraft.
 4. **Hardened `.gitignore`** for local build artefacts and signing material.
+5. **"Invert colors" applies to the whole document** — the switch in the editor
+   menu now flips `invertible` on every page's background image (for example,
+   all pages of an imported PDF) instead of only the current page. Images that
+   are not page backgrounds keep their own switch.
 
 Nothing has been removed from the upstream source; all upstream copyright
 notices are retained verbatim.

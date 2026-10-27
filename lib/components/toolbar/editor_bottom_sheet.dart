@@ -182,6 +182,12 @@ class _EditorBottomSheetState extends State<EditorBottomSheet> {
                 }),
                 isBackground: true,
                 toggleAsBackground: widget.removeBackgroundImage,
+                onInvertibleChanged: (invertible) {
+                  // "Invert colors" applies to the whole document: every page
+                  // of an imported PDF is its own background image.
+                  widget.coreInfo.setBackgroundImagesInvertible(invertible);
+                  widget.redrawAndSave();
+                },
                 singleRow: true,
               ),
               const SizedBox(height: 16),

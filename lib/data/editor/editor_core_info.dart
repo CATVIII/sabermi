@@ -98,6 +98,43 @@ class EditorCoreInfo {
   bool get isEmpty => pages.every((EditorPage page) => page.isEmpty);
   bool get isNotEmpty => !isEmpty;
 
+  /// The background image of every page in this note, in page order.
+  ///
+  /// Importing a PDF creates one [PdfEditorImage] per page, so a note made from
+  /// a PDF has one background image per page.
+  Iterable<EditorImage> get backgroundImages =>
+      pages.map((page) => page.backgroundImage).whereType<EditorImage>();
+
+  /// Sets [EditorImage.invertible] on every page's background image.
+  ///
+  /// "Invert colors" in the editor menu is a document-wide setting: applying it
+  /// to the current page alone would leave every other page inverted.
+  void setBackgroundImagesInvertible(bool invertible) {
+    for (final image in backgroundImages) {
+      image.invertible = invertible;
+    }
+  }
+
+  /// The inversion setting that newly imported background images should
+  /// inherit: the setting of the background image closest to [pageIndex].
+  ///
+  /// Falls back to `true` (the default for a new image) when the note has no
+  /// background images yet, which is always the case when creating a note from
+  /// a PDF.
+  bool backgroundImageInvertibleNear(int pageIndex) {
+    if (pages.isEmpty) return true;
+
+    for (var i = pageIndex.clamp(0, pages.length - 1); i >= 0; i--) {
+      final invertible = pages[i].backgroundImage?.invertible;
+      if (invertible != null) return invertible;
+    }
+    for (var i = pageIndex + 1; i < pages.length; i++) {
+      final invertible = pages[i].backgroundImage?.invertible;
+      if (invertible != null) return invertible;
+    }
+    return true;
+  }
+
   @visibleForTesting
   new({required this.filePath, this.readOnlyReason})
     : nextImageId = 0,

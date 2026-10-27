@@ -20,6 +20,7 @@ class CanvasImageDialog extends StatefulWidget {
     required this.redrawImage,
     required this.isBackground,
     required this.toggleAsBackground,
+    this.onInvertibleChanged,
     this.singleRow = false,
   });
 
@@ -30,6 +31,13 @@ class CanvasImageDialog extends StatefulWidget {
   final bool isBackground;
   final VoidCallback? toggleAsBackground;
 
+  /// Called with the new value after [EditorImage.invertible] changes.
+  ///
+  /// The editor menu passes a callback here so that toggling the switch applies
+  /// to the whole document instead of just the current page. Leave it null to
+  /// keep changing only this image.
+  final ValueChanged<bool>? onInvertibleChanged;
+
   final bool singleRow;
 
   @override
@@ -37,11 +45,15 @@ class CanvasImageDialog extends StatefulWidget {
 }
 
 class _CanvasImageDialogState extends State<CanvasImageDialog> {
-  void setInvertible([bool? value]) => setState(() {
-    widget.image.invertible = value ?? !widget.image.invertible;
-    widget.image.onMiscChange?.call();
-    widget.redrawImage();
-  });
+  void setInvertible([bool? value]) {
+    final invertible = value ?? !widget.image.invertible;
+    setState(() {
+      widget.image.invertible = invertible;
+      widget.image.onMiscChange?.call();
+      widget.onInvertibleChanged?.call(invertible);
+      widget.redrawImage();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

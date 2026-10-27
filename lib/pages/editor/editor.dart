@@ -1442,6 +1442,13 @@ class EditorState extends State<Editor> {
     final emptyPage = coreInfo.pages.removeLast();
     assert(emptyPage.isEmpty);
 
+    // New pages inherit the document's current inversion setting, so that
+    // importing more pages doesn't bring back inverted pages after the user
+    // turned inversion off for the whole document.
+    final bool invertible = coreInfo.backgroundImageInvertibleNear(
+      currentPageIndex,
+    );
+
     for (final pdfPage in pdfDocument.pages) {
       assert(pdfPage.pageNumber >= 1, 'pdfrx page numbers start at 1');
 
@@ -1461,6 +1468,7 @@ class EditorState extends State<Editor> {
           pageIndex: coreInfo.pages.length,
           pageSize: pageSize,
           naturalSize: pdfPage.size,
+          invertible: invertible,
           onMoveImage: onMoveImage,
           onDeleteImage: onDeleteImage,
           onMiscChange: autosaveAfterDelay,
