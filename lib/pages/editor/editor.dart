@@ -514,8 +514,8 @@ class EditorState extends State<Editor> {
       if (scrollY < bottomOfLastPage) {
         _transformationController.value = Matrix4.translationValues(
           0,
-          // Slight upwards offset so that the page is not flush with the top of the screen
-          topOfLastPage + 50,
+          // Align the page top with the viewport top, same as scrollToPage.
+          topOfLastPage,
           0,
         );
       }

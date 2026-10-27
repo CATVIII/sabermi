@@ -80,9 +80,13 @@ class CanvasGestureDetector extends StatefulWidget {
     required List<EditorPage> pages,
     required double screenWidth,
   }) {
-    if (pageIndex <= 0) return 0;
-
-    double top = 0;
+    // Keep this in sync with _PagesBuilder: the page column starts with two
+    // gaps of padding, then one gap between each pair of pages.
+    //
+    // Missing the leading padding here was why a page scrolled to with
+    // `scrollToPage` sat one strip lower than the top of the viewport, leaving
+    // the tail of the previous page visible.
+    double top = Editor.gapBetweenPages * 2;
 
     for (int i = 0; i < pageIndex && i < pages.length; i++) {
       final pageSize = pages[i].size;
@@ -91,7 +95,7 @@ class CanvasGestureDetector extends StatefulWidget {
       /// is the minimum of the page width and the screen width.
       final pageWidthFitted = min(pageSize.width, screenWidth);
 
-      top += 16;
+      top += Editor.gapBetweenPages;
       top += pageSize.height * (pageWidthFitted / pageSize.width);
     }
 
@@ -111,8 +115,13 @@ class CanvasGestureDetector extends StatefulWidget {
     );
     transformationController.value = Matrix4.translationValues(
       0,
-      // Slight upwards offset so that the page is not flush with the top of the screen
-      topOfPage + 50,
+      // Align the top of the page with the top of the viewport.
+      //
+      // Upstream added a 50 px nudge here ("so that the page is not flush with
+      // the top of the screen"), which left a strip of the *previous* page
+      // visible above the page you just jumped to. SaberMI removes it, which
+      // also keeps EditorState.currentPageIndex consistent with this position.
+      topOfPage,
       0,
     );
   }
