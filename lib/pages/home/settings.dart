@@ -421,6 +421,12 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
 
                 SettingsSubtitle(subtitle: t.settings.prefCategories.stylus),
+                SettingsSwitch(
+                  title: t.settings.prefLabels.showStylusCursor,
+                  subtitle: t.settings.prefDescriptions.showStylusCursor,
+                  icon: Icons.ads_click,
+                  pref: stows.showStylusCursor,
+                ),
                 ValueListenableBuilder(
                   valueListenable: stows.miuiPenGesturesEnabled,
                   builder: (context, enabled, _) {

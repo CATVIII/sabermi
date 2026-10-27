@@ -477,6 +477,7 @@ class Translations$settings$prefLabels$zh_Hans_CN extends Translations$settings$
 	@override String get hideFingerDrawingToggle => '隐藏 切换手指绘图';
 	@override String get autoDisableFingerDrawingWhenStylusDetected => '自动禁用手指绘图';
 	@override String get miuiPenGestures => '小米焦点触控笔 Pro 手势';
+	@override String get showStylusCursor => '显示手写笔光标';
 	@override String get penPinchAction => '轻捏笔身';
 	@override String get penTapAction => '双击笔身';
 	@override String get penSlideUpAction => '笔身上滑';
@@ -508,6 +509,7 @@ class Translations$settings$prefDescriptions$zh_Hans_CN extends Translations$set
 	@override late final Translations$settings$prefDescriptions$hideFingerDrawing$zh_Hans_CN hideFingerDrawing = Translations$settings$prefDescriptions$hideFingerDrawing$zh_Hans_CN.internal(_root);
 	@override String get autoDisableFingerDrawingWhenStylusDetected => '当检测到手写笔时关闭手指绘图';
 	@override String get miuiPenGestures => '用笔身的轻捏、双击和滑动来操作编辑器。需要小米焦点触控笔 Pro。';
+	@override String get showStylusCursor => '悬停时在笔尖位置显示落点预览。';
 	@override String get penPinchAction => '轻捏笔身。选「按住时切换」时只在轻捏期间生效。';
 	@override String get penTapAction => '双击笔身。';
 	@override String get penSlideUpAction => '在笔身上向上滑动。';

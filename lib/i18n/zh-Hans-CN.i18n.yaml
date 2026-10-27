@@ -135,6 +135,7 @@ settings:
     hideFingerDrawingToggle: 隐藏 切换手指绘图
     autoDisableFingerDrawingWhenStylusDetected: 自动禁用手指绘图
     miuiPenGestures: 小米焦点触控笔 Pro 手势
+    showStylusCursor: 显示手写笔光标
     penPinchAction: 轻捏笔身
     penTapAction: 双击笔身
     penSlideUpAction: 笔身上滑
@@ -161,6 +162,7 @@ settings:
       fixedOff: 手指绘图固定为禁用状态
     autoDisableFingerDrawingWhenStylusDetected: 当检测到手写笔时关闭手指绘图
     miuiPenGestures: 用笔身的轻捏、双击和滑动来操作编辑器。需要小米焦点触控笔 Pro。
+    showStylusCursor: 悬停时在笔尖位置显示落点预览。
     penPinchAction: 轻捏笔身。选「按住时切换」时只在轻捏期间生效。
     penTapAction: 双击笔身。
     penSlideUpAction: 在笔身上向上滑动。

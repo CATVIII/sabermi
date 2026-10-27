@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:saber/data/extensions/change_notifier_extensions.dart';
 import 'package:saber/data/tools/pen.dart';
 import 'package:saber/i18n/strings.g.dart';
 
@@ -79,6 +80,7 @@ class _SizeSlider extends StatelessWidget {
     setState(() {
       pen.options.size = newSize;
     });
+    Pen.optionsChanged.notifyListenersPlease();
   }
 
   @override

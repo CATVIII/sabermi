@@ -75,6 +75,13 @@ class Pen extends Tool {
     _currentPen = currentPen;
   }
 
+  /// Fires when a pen's [options] change, e.g. when the size slider moves.
+  ///
+  /// The size slider mutates [options] without rebuilding the editor, so UI
+  /// that mirrors the brush appearance (like the stylus cursor) listens to
+  /// this instead of recomputing on every pointer event.
+  static final optionsChanged = ChangeNotifier();
+
   void onDragStart(
     Offset position,
     EditorPage page,

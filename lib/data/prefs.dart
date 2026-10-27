@@ -243,6 +243,14 @@ class Stows {
     volatile: !_isOnMainIsolate,
   );
 
+  /// Whether to show a preview of the pen tip's landing point while the stylus
+  /// is hovering above the screen.
+  final showStylusCursor = PlainStow(
+    'showStylusCursor',
+    true,
+    volatile: !_isOnMainIsolate,
+  );
+
   /// Whether to ask the Xiaomi stylus service to deliver pen-body gestures
   /// (tap / slide up / slide down) to this app.
   ///

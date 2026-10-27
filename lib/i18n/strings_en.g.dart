@@ -761,6 +761,9 @@ class Translations$settings$prefLabels$en {
 	/// en: 'Xiaomi Focus Pen Pro gestures'
 	String get miuiPenGestures => 'Xiaomi Focus Pen Pro gestures';
 
+	/// en: 'Show stylus cursor'
+	String get showStylusCursor => 'Show stylus cursor';
+
 	/// en: 'Lightly pinch pen body'
 	String get penPinchAction => 'Lightly pinch pen body';
 
@@ -832,8 +835,11 @@ class Translations$settings$prefDescriptions$en {
 	/// en: 'Turn off finger drawing when a stylus is detected'
 	String get autoDisableFingerDrawingWhenStylusDetected => 'Turn off finger drawing when a stylus is detected';
 
-	/// en: 'Use the pen body's pinch, double tap and slide gestures to control the editor. Requires a Xiaomi Focus Pen Pro.'
-	String get miuiPenGestures => 'Use the pen body\'s pinch, double tap and slide gestures to control the editor. Requires a Xiaomi Focus Pen Pro.';
+	/// en: 'Use the pen body's pinch, double tap and slide gestures to control the editor.'
+	String get miuiPenGestures => 'Use the pen body\'s pinch, double tap and slide gestures to control the editor.';
+
+	/// en: 'Show a preview of the pen tip's landing point while hovering. Requires a Xiaomi Focus Pen Pro.'
+	String get showStylusCursor => 'Show a preview of the pen tip\'s landing point while hovering. Requires a Xiaomi Focus Pen Pro.';
 
 	/// en: 'Lightly pinching the pen body. "Eraser while held" only lasts as long as you keep pinching.'
 	String get penPinchAction => 'Lightly pinching the pen body. "Eraser while held" only lasts as long as you keep pinching.';

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:collapsible/collapsible.dart';
 import 'package:file_picker/file_picker.dart';
@@ -22,6 +23,7 @@ import 'package:saber/components/canvas/canvas_gesture_detector.dart';
 import 'package:saber/components/canvas/canvas_image.dart';
 import 'package:saber/components/canvas/image/editor_image.dart';
 import 'package:saber/components/canvas/save_indicator.dart';
+import 'package:saber/components/canvas/stylus_cursor_preview.dart';
 import 'package:saber/components/editor/read_only_banner.dart';
 import 'package:saber/components/theming/adaptive_alert_dialog.dart';
 import 'package:saber/components/theming/adaptive_icon.dart';
@@ -36,6 +38,7 @@ import 'package:saber/data/editor/editor_exporter.dart';
 import 'package:saber/data/editor/editor_history.dart';
 import 'package:saber/data/editor/page.dart';
 import 'package:saber/data/extensions/change_notifier_extensions.dart';
+import 'package:saber/data/extensions/color_extensions.dart';
 import 'package:saber/data/extensions/matrix4_extensions.dart';
 import 'package:saber/data/file_manager/file_manager.dart';
 import 'package:saber/data/nextcloud/saber_syncer.dart';
@@ -105,6 +108,15 @@ class EditorState extends State<Editor> {
 
   final _canvasGestureDetectorKey = GlobalKey<CanvasGestureDetectorState>();
   final _transformationController = TransformationController();
+
+  /// Where the stylus is hovering, in canvas coordinates.
+  ///
+  /// Only the [StylusCursorPreview] listens to this, so hover events don't
+  /// rebuild the editor.
+  final stylusHoverPosition = ValueNotifier<Offset?>(null);
+  Timer? _stylusHoverWatcher;
+  DateTime? _lastStylusHover;
+
   double get scrollY {
     final transformation = _transformationController.value;
     final scale = transformation.approxScale;
@@ -338,6 +350,53 @@ class EditorState extends State<Editor> {
 
     toolOptionsType.value = bothOpen ? ToolOptions.hide : target;
     showColorOptions.value = !bothOpen;
+  }
+
+  /// Builds the ring that previews where the stylus will land.
+  ///
+  /// The ring uses the current pen's colour and width, or the eraser's
+  /// diameter. It is hidden while the stylus isn't hovering.
+  Widget _buildStylusCursor(BuildContext context) {
+    if (!stows.showStylusCursor.value) return const SizedBox.shrink();
+
+    final tool = currentTool;
+    final Color color;
+    final double Function() diameter;
+    if (tool is Eraser) {
+      color = ColorScheme.of(context).onSurface.withValues(alpha: 0.7);
+      // Eraser.size is the radius of the erased area.
+      diameter = () => tool.size * 2;
+    } else if (tool is Pen) {
+      final invert =
+          stows.editorAutoInvert.value &&
+          Theme.brightnessOf(context) == .dark;
+      color = tool.color.withInversion(invert);
+      diameter = () => tool.options.size;
+    } else {
+      return const SizedBox.shrink();
+    }
+
+    final pageWidth = coreInfo.pages.isEmpty
+        ? EditorPage.defaultWidth
+        : coreInfo.pages.first.size.width;
+    final containerWidth =
+        _canvasGestureDetectorKey.currentState?.containerBounds.maxWidth;
+    final canvasWidth =
+        containerWidth != null && containerWidth.isFinite && containerWidth > 0
+        ? containerWidth
+        : MediaQuery.sizeOf(context).width;
+    final pageScale = pageWidth <= 0
+        ? 1.0
+        : min(pageWidth, canvasWidth) / pageWidth;
+
+    return StylusCursorPreview(
+      position: stylusHoverPosition,
+      color: color,
+      diameter: diameter,
+      pageScale: pageScale,
+      transformationController: _transformationController,
+      sizeListenable: Pen.optionsChanged,
+    );
   }
 
   void _scrollToRelativePage(int delta) {
@@ -1006,6 +1065,37 @@ class EditorState extends State<Editor> {
     isHovering = false;
   }
 
+  /// Updates (or hides, when [position] is null) the stylus landing preview.
+  void onStylusHover(Offset? position) {
+    if (position == null || !stows.showStylusCursor.value) {
+      _clearStylusCursor();
+      return;
+    }
+
+    _lastStylusHover = DateTime.now();
+    stylusHoverPosition.value = position;
+
+    // The platform doesn't tell us when the stylus leaves the screen, so hide
+    // the cursor if no hover event has arrived for a while.
+    _stylusHoverWatcher ??= Timer.periodic(
+      const Duration(milliseconds: 500),
+      (_) {
+        final last = _lastStylusHover;
+        if (last == null ||
+            DateTime.now().difference(last) > const Duration(seconds: 2)) {
+          _clearStylusCursor();
+        }
+      },
+    );
+  }
+
+  void _clearStylusCursor() {
+    _stylusHoverWatcher?.cancel();
+    _stylusHoverWatcher = null;
+    _lastStylusHover = null;
+    stylusHoverPosition.value = null;
+  }
+
   void onStylusButtonChanged(bool buttonIsPressed) {
     stylusButtonWasPressed |= buttonIsPressed;
 
@@ -1648,6 +1738,12 @@ class EditorState extends State<Editor> {
         );
       },
       transformationController: _transformationController,
+      onStylusHover: onStylusHover,
+    );
+
+    final Widget canvasWithCursor = Stack(
+      fit: StackFit.expand,
+      children: [canvas, _buildStylusCursor(context)],
     );
 
     final readonlyBanner = ReadOnlyBanner(
@@ -1821,7 +1917,7 @@ class EditorState extends State<Editor> {
           Expanded(
             child: Column(
               children: [
-                Expanded(child: canvas),
+                Expanded(child: canvasWithCursor),
                 readonlyBanner,
               ],
             ),
@@ -1835,7 +1931,7 @@ class EditorState extends State<Editor> {
             ? VerticalDirection.up
             : VerticalDirection.down,
         children: [
-          Expanded(child: canvas),
+          Expanded(child: canvasWithCursor),
           toolbar,
           readonlyBanner,
         ],
@@ -2270,6 +2366,8 @@ class EditorState extends State<Editor> {
     _penGestureSubscription?.cancel();
     _penGestureSubscription = null;
     stows.miuiPenGesturesEnabled.removeListener(_onPenGesturesEnabledChanged);
+    _clearStylusCursor();
+    stylusHoverPosition.dispose();
     toolOptionsType.dispose();
     showColorOptions.dispose();
     showExportOptions.dispose();

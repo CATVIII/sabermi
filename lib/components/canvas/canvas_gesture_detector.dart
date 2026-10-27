@@ -36,6 +36,7 @@ class CanvasGestureDetector extends StatefulWidget {
     required this.pageBuilder,
     required this.placeholderPageBuilder,
     required this.isTextEditing,
+    this.onStylusHover,
     TransformationController? transformationController,
   }) : _transformationController =
            transformationController ?? TransformationController();
@@ -66,6 +67,12 @@ class CanvasGestureDetector extends StatefulWidget {
   placeholderPageBuilder;
 
   final bool Function() isTextEditing;
+
+  /// The current position of a hovering stylus, in the canvas' coordinate
+  /// space, or `null` when the stylus is not hovering (or has touched down).
+  ///
+  /// Used to draw a preview of the pen's landing point.
+  final ValueChanged<Offset?>? onStylusHover;
 
   late final TransformationController _transformationController;
 
@@ -428,6 +435,11 @@ class CanvasGestureDetectorState extends State<CanvasGestureDetector> {
   }
 
   void _listenerPointerEvent(PointerEvent event) {
+    if (event is PointerDownEvent) {
+      // Hide the hover cursor while drawing (or while a finger pans).
+      widget.onStylusHover?.call(null);
+    }
+
     final isStylus =
         event.kind == PointerDeviceKind.stylus ||
         event.kind == PointerDeviceKind.invertedStylus;
@@ -469,8 +481,10 @@ class CanvasGestureDetectorState extends State<CanvasGestureDetector> {
     // so these are used to detect when hovering ends
     if (event.synthesized) {
       widget.onHoveringEnd();
+      widget.onStylusHover?.call(null);
     } else {
       widget.onHovering();
+      widget.onStylusHover?.call(event.localPosition);
     }
 
     _detectStylusButton(event);

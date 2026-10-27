@@ -135,6 +135,7 @@ settings:
     hideFingerDrawingToggle: Hide the finger drawing toggle
     autoDisableFingerDrawingWhenStylusDetected: Auto-disable finger drawing
     miuiPenGestures: Xiaomi Focus Pen Pro gestures
+    showStylusCursor: Show stylus cursor
     penPinchAction: Lightly pinch pen body
     penTapAction: Double tap pen body
     penSlideUpAction: Slide up on pen body
@@ -162,6 +163,7 @@ settings:
     autoDisableFingerDrawingWhenStylusDetected: Turn off finger drawing when a stylus is detected
     miuiPenGestures: >-
       Use the pen body's pinch, double tap and slide gestures to control the editor.
+    showStylusCursor: Show a preview of the pen tip's landing point while hovering.
       Requires a Xiaomi Focus Pen Pro.
     penPinchAction: Lightly pinching the pen body. "Eraser while held" only lasts as long as you keep pinching.
     penTapAction: Double-tapping the pen body.
