@@ -7,7 +7,6 @@ import 'package:saber/components/canvas/canvas_image_dialog.dart';
 import 'package:saber/components/canvas/image/editor_image.dart';
 import 'package:saber/components/theming/adaptive_alert_dialog.dart';
 import 'package:saber/data/extensions/change_notifier_extensions.dart';
-import 'package:saber/data/prefs.dart';
 import 'package:saber/i18n/strings.g.dart';
 
 class CanvasImage extends StatefulHookWidget {
@@ -17,6 +16,7 @@ class CanvasImage extends StatefulHookWidget {
     this.overrideBoxFit,
     required this.pageSize,
     required this.setAsBackground,
+    required this.pageInvert,
     this.isBackground = false,
     this.readOnly = false,
     this.selected = false,
@@ -28,6 +28,13 @@ class CanvasImage extends StatefulHookWidget {
   final BoxFit? overrideBoxFit;
   final Size pageSize;
   final void Function(EditorImage image)? setAsBackground;
+
+  /// Whether the page this image is on is rendered inverted.
+  ///
+  /// Inline images follow the page's background, not the app theme, so a white
+  /// PDF stays readable in dark mode.
+  final bool pageInvert;
+
   final bool isBackground;
   final bool readOnly;
   final bool selected;
@@ -69,8 +76,6 @@ class _CanvasImageState extends State<CanvasImage> {
     }
   }
 
-  Brightness imageBrightness = .light;
-
   Rect panStartRect = .zero;
   Offset panStartPosition = .zero;
 
@@ -100,13 +105,7 @@ class _CanvasImageState extends State<CanvasImage> {
     useListenable(widget.image);
     if (widget.readOnly) active = false;
 
-    final currentBrightness = widget.image.invertible
-        ? Theme.brightnessOf(context)
-        : Brightness.light;
-
-    if (stows.editorAutoInvert.value && currentBrightness != imageBrightness) {
-      imageBrightness = currentBrightness;
-    }
+    final invert = widget.image.invertible && widget.pageInvert;
 
     final Widget unpositioned = IgnorePointer(
       ignoring: widget.readOnly,
@@ -197,7 +196,7 @@ class _CanvasImageState extends State<CanvasImage> {
                           context: context,
                           overrideBoxFit: widget.overrideBoxFit,
                           isBackground: widget.isBackground,
-                          invert: imageBrightness == .dark,
+                          invert: invert,
                         ),
                       ),
                     ),
@@ -234,6 +233,15 @@ class _CanvasImageState extends State<CanvasImage> {
         child: unpositioned,
       );
     }
+    final interactiveWidth = max(
+      widget.image.dstRect.width,
+      CanvasImage.minInteractiveSize,
+    );
+    final interactiveHeight = max(
+      widget.image.dstRect.height,
+      CanvasImage.minInteractiveSize,
+    );
+
     return AnimatedPositioned(
       // no animation if the image is being dragged or it's selected
       duration: (panStartRect != .zero || widget.selected)
@@ -241,10 +249,14 @@ class _CanvasImageState extends State<CanvasImage> {
           : const Duration(milliseconds: 300),
       curve: Curves.fastLinearToSlowEaseIn,
 
-      left: widget.image.dstRect.left,
-      top: widget.image.dstRect.top,
-      width: max(widget.image.dstRect.width, CanvasImage.minInteractiveSize),
-      height: max(widget.image.dstRect.height, CanvasImage.minInteractiveSize),
+      // The interactive box is enlarged for touch targets, but the image is
+      // centred inside it. Keep the box centred on the image so a small image
+      // (e.g. a symbol at a small size) stays exactly on its dstRect instead
+      // of jumping to the box's top-left.
+      left: widget.image.dstRect.center.dx - interactiveWidth / 2,
+      top: widget.image.dstRect.center.dy - interactiveHeight / 2,
+      width: interactiveWidth,
+      height: interactiveHeight,
 
       child: unpositioned,
     );

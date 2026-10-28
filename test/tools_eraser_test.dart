@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:perfect_freehand/perfect_freehand.dart';
 import 'package:saber/components/canvas/_stroke.dart';
+import 'package:saber/components/canvas/image/editor_image.dart';
+import 'package:saber/data/editor/editor_core_info.dart';
+import 'package:saber/data/editor/page.dart';
+import 'package:saber/data/flavor_config.dart';
 import 'package:saber/data/tools/eraser.dart';
 import 'package:sbn/has_size.dart';
 
@@ -13,6 +17,7 @@ final _options = StrokeOptions(
 const _eraserPos = Offset(50, 50);
 
 void main() {
+  FlavorConfig.setup();
   test('Test that the eraser tool erases the correct strokes', () {
     final eraser = Eraser(size: 10);
 
@@ -86,6 +91,48 @@ void main() {
       reason: 'The correct strokes should have been erased',
     );
   });
+
+  test('Test that the eraser only erases whole symbol images', () {
+    final coreInfo = EditorCoreInfo(filePath: 'test');
+    final symbol = _image(
+      coreInfo,
+      isSymbol: true,
+      rect: const Rect.fromLTWH(40, 40, 20, 20),
+    );
+    final photo = _image(
+      coreInfo,
+      isSymbol: false,
+      rect: const Rect.fromLTWH(40, 40, 20, 20),
+    );
+    final eraser = Eraser(size: 10);
+
+    final erased = eraser.checkForOverlappingImages(_eraserPos, [
+      symbol,
+      photo,
+    ]);
+    expect(erased, [symbol]);
+    expect(eraser.onDragEndImages(), [symbol]);
+    expect(eraser.onDragEndImages(), isEmpty);
+  });
+}
+
+EditorImage _image(
+  EditorCoreInfo coreInfo, {
+  required bool isSymbol,
+  required Rect rect,
+}) {
+  return SvgEditorImage(
+    id: coreInfo.nextImageId++,
+    svgString: '<svg height="10" width="10"></svg>',
+    svgFile: null,
+    pageIndex: 0,
+    pageSize: EditorPage.defaultSize,
+    isSymbol: isSymbol,
+    onMoveImage: null,
+    onDeleteImage: null,
+    onMiscChange: null,
+    assetCache: coreInfo.assetCache,
+  )..dstRect = rect;
 }
 
 Stroke _strokeWithPoint(Offset point) => Stroke(

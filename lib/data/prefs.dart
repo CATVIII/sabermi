@@ -287,6 +287,42 @@ class Stows {
     volatile: !_isOnMainIsolate,
   );
 
+  /// The symbol selected in the symbol tool.
+  final symbolToolSymbolId = PlainStow(
+    'symbolToolSymbolId',
+    'builtin:quarter',
+    volatile: !_isOnMainIsolate,
+  );
+
+  /// The notehead diameter (or SVG longest side) to insert, in page units.
+  final symbolToolSize = PlainStow(
+    'symbolToolSize',
+    40.0,
+    volatile: !_isOnMainIsolate,
+  );
+
+  /// The colour used by monochrome symbols (music notes).
+  final symbolToolColor = PlainStow(
+    'symbolToolColor',
+    Colors.black.toARGB32(),
+    volatile: !_isOnMainIsolate,
+  );
+
+  /// The last stem direction, remembered for the next symbol.
+  final symbolToolStemUp = PlainStow(
+    'symbolToolStemUp',
+    true,
+    volatile: !_isOnMainIsolate,
+  );
+
+  /// Waits until the symbol tool's saved properties have been read.
+  Future<void> waitUntilSymbolPropertiesRead() => Future.wait([
+    symbolToolSymbolId.waitUntilRead(),
+    symbolToolSize.waitUntilRead(),
+    symbolToolColor.waitUntilRead(),
+    symbolToolStemUp.waitUntilRead(),
+  ]);
+
   /// Moves saved pen gestures that used the old separate "open pen options" and
   /// "open colour picker" actions to the merged action.
   ///

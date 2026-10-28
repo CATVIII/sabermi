@@ -484,7 +484,14 @@ class CanvasGestureDetectorState extends State<CanvasGestureDetector> {
       widget.onStylusHover?.call(null);
     } else {
       widget.onHovering();
-      widget.onStylusHover?.call(event.localPosition);
+      // Use the same RenderBox as Editor._canvasLocalPosition() (the
+      // CanvasGestureDetector root) so the hover ghost, the pending ghost and
+      // the inserted image all use one coordinate space.
+      final box = context.findRenderObject();
+      final localPosition = box is RenderBox
+          ? box.globalToLocal(event.position)
+          : event.localPosition;
+      widget.onStylusHover?.call(localPosition);
     }
 
     _detectStylusButton(event);

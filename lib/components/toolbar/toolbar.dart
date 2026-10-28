@@ -16,6 +16,7 @@ import 'package:saber/components/toolbar/export_bar.dart';
 import 'package:saber/components/toolbar/pen_modal.dart';
 import 'package:saber/components/toolbar/selection_bar.dart';
 import 'package:saber/components/toolbar/size_picker.dart';
+import 'package:saber/components/toolbar/symbol_modal.dart';
 import 'package:saber/components/toolbar/toolbar_button.dart';
 import 'package:saber/data/editor/page.dart';
 import 'package:saber/data/extensions/color_extensions.dart';
@@ -27,6 +28,7 @@ import 'package:saber/data/tools/laser_pointer.dart';
 import 'package:saber/data/tools/pen.dart';
 import 'package:saber/data/tools/pencil.dart';
 import 'package:saber/data/tools/select.dart';
+import 'package:saber/data/tools/symbol_tool.dart';
 import 'package:saber/i18n/strings.g.dart';
 
 class Toolbar extends StatefulWidget {
@@ -94,8 +96,8 @@ class Toolbar extends StatefulWidget {
   @override
   State<Toolbar> createState() => _ToolbarState();
 
-  static const _buttonPaddingHorizontal = EdgeInsets.symmetric(horizontal: 6);
-  static const _buttonPaddingVertical = EdgeInsets.symmetric(vertical: 6);
+  static const _buttonPaddingHorizontal = EdgeInsets.symmetric(horizontal: 2);
+  static const _buttonPaddingVertical = EdgeInsets.symmetric(vertical: 2);
 }
 
 class _ToolbarState extends State<Toolbar> {
@@ -201,6 +203,7 @@ class _ToolbarState extends State<Toolbar> {
 
     final currentColor = switch (widget.currentTool) {
       final Pen pen => pen.color,
+      final SymbolTool symbol => symbol.color,
       final Select select => select.getDominantStrokeColor(),
       _ => null,
     };
@@ -260,6 +263,7 @@ class _ToolbarState extends State<Toolbar> {
                 duplicateSelection: widget.duplicateSelection,
                 deleteSelection: widget.deleteSelection,
               ),
+              .symbol => const SymbolModal(),
             },
           );
         },
@@ -396,6 +400,23 @@ class _ToolbarState extends State<Toolbar> {
                 },
                 padding: buttonPadding,
                 child: const FaIcon(Highlighter.highlighterIcon, size: 16),
+              ),
+              ToolbarIconButton(
+                tooltip: t.editor.symbols.toolName,
+                selected: widget.currentTool is SymbolTool,
+                enabled: !widget.readOnly,
+                onPressed: () {
+                  if (widget.currentTool is SymbolTool) {
+                    toolOptionsType.value = toolOptionsType.value == .symbol
+                        ? .hide
+                        : .symbol;
+                  } else {
+                    toolOptionsType.value = .hide;
+                    widget.setTool(SymbolTool.current);
+                  }
+                },
+                padding: buttonPadding,
+                child: const Icon(Icons.music_note, size: 18),
               ),
               ValueListenableBuilder(
                 valueListenable: showColorOptions,
@@ -593,4 +614,4 @@ class _ToolbarState extends State<Toolbar> {
   }
 }
 
-enum ToolOptions { hide, pen, highlighter, pencil, select }
+enum ToolOptions { hide, pen, highlighter, pencil, select, symbol }

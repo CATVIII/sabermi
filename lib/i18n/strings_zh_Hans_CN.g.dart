@@ -221,6 +221,7 @@ class Translations$editor$zh_Hans_CN extends Translations$editor$en {
 	// Translations
 	@override late final Translations$editor$toolbar$zh_Hans_CN toolbar = Translations$editor$toolbar$zh_Hans_CN.internal(_root);
 	@override late final Translations$editor$pens$zh_Hans_CN pens = Translations$editor$pens$zh_Hans_CN.internal(_root);
+	@override late final Translations$editor$symbols$zh_Hans_CN symbols = Translations$editor$symbols$zh_Hans_CN.internal(_root);
 	@override late final Translations$editor$penOptions$zh_Hans_CN penOptions = Translations$editor$penOptions$zh_Hans_CN.internal(_root);
 	@override late final Translations$editor$colors$zh_Hans_CN colors = Translations$editor$colors$zh_Hans_CN.internal(_root);
 	@override late final Translations$editor$imageOptions$zh_Hans_CN imageOptions = Translations$editor$imageOptions$zh_Hans_CN.internal(_root);
@@ -736,6 +737,28 @@ class Translations$editor$pens$zh_Hans_CN extends Translations$editor$pens$en {
 	@override String get laserPointer => '激光笔';
 }
 
+// Path: editor.symbols
+class Translations$editor$symbols$zh_Hans_CN extends Translations$editor$symbols$en {
+	Translations$editor$symbols$zh_Hans_CN.internal(TranslationsZhHansCn root) : this._root = root, super.internal(root);
+
+	final TranslationsZhHansCn _root; // ignore: unused_field
+
+	// Translations
+	@override String get toolName => '符号';
+	@override String get pickSymbol => '选择符号';
+	@override String get builtIn => '内置符号';
+	@override String get custom => '自定义符号';
+	@override String get addSvg => '添加 SVG';
+	@override String get deleteSymbol => '删除';
+	@override String get size => '大小';
+	@override String get stemHint => '向上或下滑动以确认符杆方向';
+	@override String get tapToInsert => '点击画布插入图形';
+	@override String get invalidSvg => '不是有效的 SVG 文件';
+	@override String get svgTooLarge => 'SVG 文件太大';
+	@override String get added => '已添加「{name}」';
+	@override late final Translations$editor$symbols$notes$zh_Hans_CN notes = Translations$editor$symbols$notes$zh_Hans_CN.internal(_root);
+}
+
 // Path: editor.penOptions
 class Translations$editor$penOptions$zh_Hans_CN extends Translations$editor$penOptions$en {
 	Translations$editor$penOptions$zh_Hans_CN.internal(TranslationsZhHansCn root) : this._root = root, super.internal(root);
@@ -979,6 +1002,20 @@ class Translations$login$encLoginStep$encFaq$2$zh_Hans_CN extends Translations$l
 	// Translations
 	@override String get q => '我可以使用与我的 Nextcloud 帐户相同的密码吗？';
 	@override String get a => '是的，但请记住，如果服务器管理员或其他人可以访问您的 Nextcloud 帐户，他们将更容易访问您的笔记。';
+}
+
+// Path: editor.symbols.notes
+class Translations$editor$symbols$notes$zh_Hans_CN extends Translations$editor$symbols$notes$en {
+	Translations$editor$symbols$notes$zh_Hans_CN.internal(TranslationsZhHansCn root) : this._root = root, super.internal(root);
+
+	final TranslationsZhHansCn _root; // ignore: unused_field
+
+	// Translations
+	@override String get whole => '全音符';
+	@override String get half => '二分音符';
+	@override String get quarter => '四分音符';
+	@override String get eighth => '八分音符';
+	@override String get sixteenth => '十六分音符';
 }
 
 // Path: editor.menu.boxFits

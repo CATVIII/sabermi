@@ -318,6 +318,25 @@ editor:
     pencil: Pencil
     shapePen: Shape pen
     laserPointer: Laser pointer
+  symbols:
+    toolName: Symbol
+    pickSymbol: Choose a symbol
+    builtIn: Built-in symbols
+    custom: Custom symbols
+    addSvg: Add SVG
+    deleteSymbol: Delete
+    size: Size
+    stemHint: Drag up or down to choose the stem direction
+    tapToInsert: Tap the canvas to insert this symbol
+    invalidSvg: This file isn't a valid SVG
+    svgTooLarge: This SVG file is too large
+    added: 'Added "{name}"'
+    notes:
+      whole: Whole note
+      half: Half note
+      quarter: Quarter note
+      eighth: Eighth note
+      sixteenth: Sixteenth note
   penOptions:
     size: Size
   colors:

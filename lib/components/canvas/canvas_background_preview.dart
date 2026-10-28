@@ -95,6 +95,7 @@ class CanvasBackgroundPreview extends StatelessWidget {
                 overrideBoxFit: overrideBoxFit,
                 pageSize: previewSize,
                 setAsBackground: null,
+                pageInvert: invert && backgroundImage!.invertible,
                 isBackground: true,
                 readOnly: true,
               ),

@@ -24,6 +24,7 @@ import 'package:saber/components/canvas/canvas_image.dart';
 import 'package:saber/components/canvas/image/editor_image.dart';
 import 'package:saber/components/canvas/save_indicator.dart';
 import 'package:saber/components/canvas/stylus_cursor_preview.dart';
+import 'package:saber/components/canvas/symbol_cursor_preview.dart';
 import 'package:saber/components/editor/read_only_banner.dart';
 import 'package:saber/components/theming/adaptive_alert_dialog.dart';
 import 'package:saber/components/theming/adaptive_icon.dart';
@@ -52,6 +53,7 @@ import 'package:saber/data/tools/pen.dart';
 import 'package:saber/data/tools/pencil.dart';
 import 'package:saber/data/tools/select.dart';
 import 'package:saber/data/tools/shape_pen.dart';
+import 'package:saber/data/tools/symbol_tool.dart';
 import 'package:saber/i18n/strings.g.dart';
 import 'package:saber/pages/home/whiteboard.dart';
 import 'package:sbn/change.dart';
@@ -117,6 +119,13 @@ class EditorState extends State<Editor> {
   Timer? _stylusHoverWatcher;
   DateTime? _lastStylusHover;
 
+  /// The symbol being placed while the pen is held down.
+  final _pendingSymbol = ValueNotifier<SymbolPending?>(null);
+
+  /// Whether the page under the symbol preview is rendered inverted.
+  final _symbolGhostInvert = ValueNotifier<bool>(false);
+  int? _symbolHoverPageIndex;
+
   double get scrollY {
     final transformation = _transformationController.value;
     final scale = transformation.approxScale;
@@ -165,6 +174,8 @@ class EditorState extends State<Editor> {
         return Tool.textEditing;
       case .laserPointer:
         return LaserPointer.currentLaserPointer;
+      case .symbol:
+        return SymbolTool.current;
     }
   }();
   Tool get currentTool => _currentTool;
@@ -344,6 +355,7 @@ class EditorState extends State<Editor> {
     final target = switch (currentTool) {
       Highlighter() => ToolOptions.highlighter,
       Pencil() => ToolOptions.pencil,
+      SymbolTool() => ToolOptions.symbol,
       _ => ToolOptions.pen,
     };
     final bothOpen = toolOptionsType.value == target && showColorOptions.value;
@@ -359,23 +371,6 @@ class EditorState extends State<Editor> {
   Widget _buildStylusCursor(BuildContext context) {
     if (!stows.showStylusCursor.value) return const SizedBox.shrink();
 
-    final tool = currentTool;
-    final Color color;
-    final double Function() diameter;
-    if (tool is Eraser) {
-      color = ColorScheme.of(context).onSurface.withValues(alpha: 0.7);
-      // Eraser.size is the radius of the erased area.
-      diameter = () => tool.size * 2;
-    } else if (tool is Pen) {
-      final invert =
-          stows.editorAutoInvert.value &&
-          Theme.brightnessOf(context) == .dark;
-      color = tool.color.withInversion(invert);
-      diameter = () => tool.options.size;
-    } else {
-      return const SizedBox.shrink();
-    }
-
     final pageWidth = coreInfo.pages.isEmpty
         ? EditorPage.defaultWidth
         : coreInfo.pages.first.size.width;
@@ -388,6 +383,33 @@ class EditorState extends State<Editor> {
     final pageScale = pageWidth <= 0
         ? 1.0
         : min(pageWidth, canvasWidth) / pageWidth;
+
+    final tool = currentTool;
+    if (tool is SymbolTool) {
+      return SymbolCursorPreview(
+        hoverPosition: stylusHoverPosition,
+        pending: _pendingSymbol,
+        tool: tool,
+        pageScale: pageScale,
+        transformationController: _transformationController,
+        pageInvert: _symbolGhostInvert,
+      );
+    }
+
+    final Color color;
+    final double Function() diameter;
+    if (tool is Eraser) {
+      color = ColorScheme.of(context).onSurface.withValues(alpha: 0.7);
+      // Eraser.size is the radius of the erased area.
+      diameter = () => tool.size * 2;
+    } else if (tool is Pen) {
+      final invert =
+          stows.editorAutoInvert.value && Theme.brightnessOf(context) == .dark;
+      color = tool.color.withInversion(invert);
+      diameter = () => tool.options.size;
+    } else {
+      return const SizedBox.shrink();
+    }
 
     return StylusCursorPreview(
       position: stylusHoverPosition,
@@ -418,6 +440,11 @@ class EditorState extends State<Editor> {
   void selectTool(Tool tool) {
     if (tool is Eraser && currentTool is Eraser) {
       tool = _lastNonEraserTool;
+    }
+
+    if (tool is! SymbolTool) {
+      // Don't leave a half-placed symbol behind if the tool changes.
+      _pendingSymbol.value = null;
     }
 
     currentTool = tool;
@@ -775,6 +802,14 @@ class EditorState extends State<Editor> {
 
   static const changePageThreshold = 50.0;
 
+  /// Converts a global position to the canvas' coordinate space.
+  Offset _canvasLocalPosition(Offset globalPosition) {
+    final box = _canvasGestureDetectorKey.currentContext?.findRenderObject();
+    return box is RenderBox
+        ? box.globalToLocal(globalPosition)
+        : globalPosition;
+  }
+
   void onDrawStart(ScaleStartDetails details) {
     final page = coreInfo.pages[dragPageIndex!];
     final position = page.renderBox!.globalToLocal(details.focalPoint);
@@ -788,12 +823,18 @@ class EditorState extends State<Editor> {
         currentPressure,
       );
     } else if (currentTool is Eraser) {
-      for (final stroke in (currentTool as Eraser).checkForOverlappingStrokes(
+      final eraser = currentTool as Eraser;
+      for (final stroke in eraser.checkForOverlappingStrokes(
         position,
         page.strokes,
       )) {
         page.strokes.remove(stroke);
       }
+      final erasedImages = eraser.checkForOverlappingImages(
+        position,
+        page.images,
+      );
+      page.images.removeWhere(erasedImages.contains);
       removeExcessPages();
     } else if (currentTool is Select) {
       final select = currentTool as Select;
@@ -807,6 +848,16 @@ class EditorState extends State<Editor> {
       }
     } else if (currentTool is LaserPointer) {
       (currentTool as LaserPointer).onDragStart(position, page, dragPageIndex!);
+    } else if (currentTool is SymbolTool) {
+      final tool = currentTool as SymbolTool;
+      _pendingSymbol.value = SymbolPending(
+        pageIndex: dragPageIndex!,
+        pagePosition: position,
+        screenPosition: _canvasLocalPosition(details.focalPoint),
+        stemUp: tool.stemUp,
+      );
+      _symbolHoverPageIndex = dragPageIndex;
+      _updateSymbolGhostInvertForPage(page);
     }
 
     previousPosition = position;
@@ -832,11 +883,21 @@ class EditorState extends State<Editor> {
       (currentTool as Pen).onDragUpdate(position, currentPressure);
       page.redrawStrokes();
     } else if (currentTool is Eraser) {
-      for (final stroke in (currentTool as Eraser).checkForOverlappingStrokes(
+      final eraser = currentTool as Eraser;
+      for (final stroke in eraser.checkForOverlappingStrokes(
         position,
         page.strokes,
       )) {
         page.strokes.remove(stroke);
+      }
+      final erasedImages = eraser.checkForOverlappingImages(
+        position,
+        page.images,
+      );
+      if (erasedImages.isNotEmpty) {
+        page.images.removeWhere(erasedImages.contains);
+        // Rebuild the image layer, not just the painted strokes.
+        setState(() {});
       }
       page.redrawStrokes();
       removeExcessPages();
@@ -897,6 +958,20 @@ class EditorState extends State<Editor> {
     } else if (currentTool is LaserPointer) {
       (currentTool as LaserPointer).onDragUpdate(position);
       page.redrawStrokes();
+    } else if (currentTool is SymbolTool) {
+      final pending = _pendingSymbol.value;
+      if (pending != null) {
+        // The notehead stays at the landing point; dragging only chooses the
+        // stem direction.
+        final dy = position.dy - pending.pagePosition.dy;
+        const threshold = 20.0;
+        final stemUp = dy < -threshold
+            ? true
+            : (dy > threshold ? false : pending.stemUp);
+        if (stemUp != pending.stemUp) {
+          _pendingSymbol.value = pending.copyWith(stemUp: stemUp);
+        }
+      }
     }
     previousPosition = position;
     moveOffset += offset;
@@ -994,14 +1069,18 @@ class EditorState extends State<Editor> {
         page.insertStroke(newStroke);
         history.recordChange(HistoricAdd(strokes: [newStroke], images: []));
       } else if (currentTool is Eraser) {
-        final erased = (currentTool as Eraser).onDragEnd();
+        final eraser = currentTool as Eraser;
+        final erased = eraser.onDragEnd();
+        final erasedImages = eraser.onDragEndImages();
         if (stylusButtonWasPressed || stows.disableEraserAfterUse.value) {
           // restore previous tool
           stylusButtonWasPressed = false;
           currentTool = _lastNonEraserTool;
         }
-        if (erased.isEmpty) return;
-        history.recordChange(HistoricDelete(strokes: erased, images: []));
+        if (erased.isEmpty && erasedImages.isEmpty) return;
+        history.recordChange(
+          HistoricDelete(strokes: erased, images: erasedImages),
+        );
       } else if (currentTool is Select) {
         if (moveOffset == .zero) return;
         final select = currentTool as Select;
@@ -1038,6 +1117,42 @@ class EditorState extends State<Editor> {
           },
         );
         if (newStroke != null) page.laserStrokes.add(newStroke);
+      } else if (currentTool is SymbolTool) {
+        final pending = _pendingSymbol.value;
+        _pendingSymbol.value = null;
+        if (pending == null) return;
+
+        final tool = currentTool as SymbolTool;
+        final symbol = tool.symbol;
+        final symbolPage = coreInfo.pages[pending.pageIndex];
+        final glyph = symbol.buildGlyph(
+          stemUp: pending.stemUp,
+          color: tool.color,
+        );
+        final image = SvgEditorImage(
+          id: coreInfo.nextImageId++,
+          assetCache: coreInfo.assetCache,
+          svgString: glyph.svg,
+          svgFile: null,
+          pageIndex: pending.pageIndex,
+          pageSize: symbolPage.size,
+          invertible: true,
+          isSymbol: true,
+          onMoveImage: onMoveImage,
+          onDeleteImage: onDeleteImage,
+          onMiscChange: autosaveAfterDelay,
+          onLoad: () => setState(() {}),
+          dstRect: glyph.dstRectFor(
+            anchorOnPage: pending.pagePosition,
+            scale: symbol.scaleFor(tool.size),
+          ),
+          naturalSize: glyph.viewBox,
+        );
+        symbolPage.images.add(image);
+        history.recordChange(
+          HistoricAdd(strokes: const <Stroke>[], images: [image]),
+        );
+        tool.setStemUp(pending.stemUp);
       }
     });
 
@@ -1075,18 +1190,46 @@ class EditorState extends State<Editor> {
     _lastStylusHover = DateTime.now();
     stylusHoverPosition.value = position;
 
+    if (currentTool is SymbolTool) {
+      _updateSymbolGhostInvert(position);
+    }
+
     // The platform doesn't tell us when the stylus leaves the screen, so hide
     // the cursor if no hover event has arrived for a while.
-    _stylusHoverWatcher ??= Timer.periodic(
-      const Duration(milliseconds: 500),
-      (_) {
-        final last = _lastStylusHover;
-        if (last == null ||
-            DateTime.now().difference(last) > const Duration(seconds: 2)) {
-          _clearStylusCursor();
-        }
-      },
-    );
+    _stylusHoverWatcher ??= Timer.periodic(const Duration(milliseconds: 500), (
+      _,
+    ) {
+      final last = _lastStylusHover;
+      if (last == null ||
+          DateTime.now().difference(last) > const Duration(seconds: 2)) {
+        _clearStylusCursor();
+      }
+    });
+  }
+
+  /// Updates [_symbolGhostInvert] from the page under the hover position.
+  void _updateSymbolGhostInvert(Offset localPosition) {
+    final box = _canvasGestureDetectorKey.currentContext?.findRenderObject();
+    final global = box is RenderBox
+        ? box.localToGlobal(localPosition)
+        : localPosition;
+    final pageIndex = onWhichPageIsFocalPoint(global);
+
+    if (pageIndex == _symbolHoverPageIndex) return;
+    _symbolHoverPageIndex = pageIndex;
+
+    final page =
+        pageIndex != null && pageIndex >= 0 && pageIndex < coreInfo.pages.length
+        ? coreInfo.pages[pageIndex]
+        : null;
+    if (page != null) _updateSymbolGhostInvertForPage(page);
+  }
+
+  void _updateSymbolGhostInvertForPage(EditorPage page) {
+    final themeInvert =
+        stows.editorAutoInvert.value && Theme.brightnessOf(context) == .dark;
+    _symbolGhostInvert.value =
+        themeInvert && (page.backgroundImage?.invertible ?? true);
   }
 
   void _clearStylusCursor() {
@@ -1847,6 +1990,8 @@ class EditorState extends State<Editor> {
                 final pen = currentTool as Pen;
                 pen.color = color;
                 pen.saveColor();
+              } else if (currentTool is SymbolTool) {
+                (currentTool as SymbolTool).setColor(color);
               } else if (currentTool is Select) {
                 // Changes color of selected strokes
                 final select = currentTool as Select;
@@ -2376,6 +2521,8 @@ class EditorState extends State<Editor> {
     stows.miuiPenGesturesEnabled.removeListener(_onPenGesturesEnabledChanged);
     _clearStylusCursor();
     stylusHoverPosition.dispose();
+    _pendingSymbol.dispose();
+    _symbolGhostInvert.dispose();
     toolOptionsType.dispose();
     showColorOptions.dispose();
     showExportOptions.dispose();

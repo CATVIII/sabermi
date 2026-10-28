@@ -5,6 +5,7 @@ import 'package:saber/data/file_manager/file_manager.dart';
 import 'package:saber/data/flavor_config.dart';
 import 'package:saber/data/pen_action.dart';
 import 'package:saber/data/tools/highlighter.dart';
+import 'package:saber/data/tools/symbol_tool.dart';
 import 'package:saber/pages/editor/editor.dart';
 
 import 'utils/test_mock_channel_handlers.dart';
@@ -52,6 +53,19 @@ void main() {
       await tester.pump();
 
       expect(state.toolOptionsType.value, ToolOptions.highlighter);
+      expect(state.showColorOptions.value, isTrue);
+    });
+
+    testWidgets('uses the symbol panel when the symbol tool is selected', (
+      tester,
+    ) async {
+      final state = await _pumpEditor(tester);
+      state.selectTool(SymbolTool.current);
+
+      state.togglePenOptionsAndColors();
+      await tester.pump();
+
+      expect(state.toolOptionsType.value, ToolOptions.symbol);
       expect(state.showColorOptions.value, isTrue);
     });
   });

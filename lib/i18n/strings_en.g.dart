@@ -307,6 +307,7 @@ class Translations$editor$en {
 	// Translations
 	late final Translations$editor$toolbar$en toolbar = Translations$editor$toolbar$en.internal(_root);
 	late final Translations$editor$pens$en pens = Translations$editor$pens$en.internal(_root);
+	late final Translations$editor$symbols$en symbols = Translations$editor$symbols$en.internal(_root);
 	late final Translations$editor$penOptions$en penOptions = Translations$editor$penOptions$en.internal(_root);
 	late final Translations$editor$colors$en colors = Translations$editor$colors$en.internal(_root);
 	late final Translations$editor$imageOptions$en imageOptions = Translations$editor$imageOptions$en.internal(_root);
@@ -1207,6 +1208,53 @@ class Translations$editor$pens$en {
 	String get laserPointer => 'Laser pointer';
 }
 
+// Path: editor.symbols
+class Translations$editor$symbols$en {
+	Translations$editor$symbols$en.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Symbol'
+	String get toolName => 'Symbol';
+
+	/// en: 'Choose a symbol'
+	String get pickSymbol => 'Choose a symbol';
+
+	/// en: 'Built-in symbols'
+	String get builtIn => 'Built-in symbols';
+
+	/// en: 'Custom symbols'
+	String get custom => 'Custom symbols';
+
+	/// en: 'Add SVG'
+	String get addSvg => 'Add SVG';
+
+	/// en: 'Delete'
+	String get deleteSymbol => 'Delete';
+
+	/// en: 'Size'
+	String get size => 'Size';
+
+	/// en: 'Drag up or down to choose the stem direction'
+	String get stemHint => 'Drag up or down to choose the stem direction';
+
+	/// en: 'Tap the canvas to insert this symbol'
+	String get tapToInsert => 'Tap the canvas to insert this symbol';
+
+	/// en: 'This file isn't a valid SVG'
+	String get invalidSvg => 'This file isn\'t a valid SVG';
+
+	/// en: 'This SVG file is too large'
+	String get svgTooLarge => 'This SVG file is too large';
+
+	/// en: 'Added "{name}"'
+	String get added => 'Added "{name}"';
+
+	late final Translations$editor$symbols$notes$en notes = Translations$editor$symbols$notes$en.internal(_root);
+}
+
 // Path: editor.penOptions
 class Translations$editor$penOptions$en {
 	Translations$editor$penOptions$en.internal(this._root);
@@ -1623,6 +1671,30 @@ class Translations$login$encLoginStep$encFaq$2$en {
 
 	/// en: 'Yes, but keep in mind that it would be easier for the server administrator or someone else to access your notes if they gain access to your Nextcloud account.'
 	String get a => 'Yes, but keep in mind that it would be easier for the server administrator or someone else to access your notes if they gain access to your Nextcloud account.';
+}
+
+// Path: editor.symbols.notes
+class Translations$editor$symbols$notes$en {
+	Translations$editor$symbols$notes$en.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Whole note'
+	String get whole => 'Whole note';
+
+	/// en: 'Half note'
+	String get half => 'Half note';
+
+	/// en: 'Quarter note'
+	String get quarter => 'Quarter note';
+
+	/// en: 'Eighth note'
+	String get eighth => 'Eighth note';
+
+	/// en: 'Sixteenth note'
+	String get sixteenth => 'Sixteenth note';
 }
 
 // Path: editor.menu.boxFits

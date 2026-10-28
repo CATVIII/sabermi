@@ -14,7 +14,9 @@ enum ToolId(final String id) {
   eraser('Eraser'),
   select('Select'),
   textEditing('TextEditingTool'),
-  laserPointer('LaserPointer');
+  laserPointer('LaserPointer'),
+  // Appended last so that previously saved `lastTool` indices stay valid.
+  symbol('Symbol');
 
   static const codec = EnumCodec(values);
 

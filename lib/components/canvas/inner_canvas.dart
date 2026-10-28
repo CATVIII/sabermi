@@ -164,6 +164,7 @@ class _InnerCanvasState extends State<InnerCanvas> {
                     image: page.backgroundImage!,
                     pageSize: Size(widget.width, widget.height),
                     setAsBackground: null,
+                    pageInvert: invert,
                     isBackground: true,
                     readOnly: true,
                   ),
@@ -183,6 +184,7 @@ class _InnerCanvasState extends State<InnerCanvas> {
                     image: page.images[i],
                     pageSize: Size(widget.width, widget.height),
                     setAsBackground: widget.setAsBackground,
+                    pageInvert: invert,
                     readOnly:
                         widget.coreInfo.readOnly || !widget.currentToolIsSelect,
                     selected:

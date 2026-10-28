@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:saber/components/canvas/_stroke.dart';
+import 'package:saber/components/canvas/image/editor_image.dart';
 
 import 'package:saber/data/tools/_tool.dart';
 import 'package:sbn/tool_id.dart';
@@ -14,6 +15,7 @@ class Eraser extends Tool {
   late final double sqrSize = square(size);
 
   List<Stroke> _erased = [];
+  final Set<EditorImage> _erasedImages = {};
 
   new({this.size = 10});
 
@@ -36,10 +38,37 @@ class Eraser extends Tool {
     return overlapping;
   }
 
+  /// Returns any symbol images that the eraser touches.
+  ///
+  /// Only images inserted by the symbol tool ([EditorImage.isSymbol]) are
+  /// affected, so photos and other images are left alone.
+  List<EditorImage> checkForOverlappingImages(
+    Offset eraserPos,
+    List<EditorImage> images,
+  ) {
+    final eraserBounds = Rect.fromCircle(center: eraserPos, radius: size);
+    final List<EditorImage> overlapping = [];
+    for (final image in images) {
+      if (!image.isSymbol) continue;
+      if (eraserBounds.overlaps(image.dstRect)) {
+        overlapping.add(image);
+        _erasedImages.add(image);
+      }
+    }
+    return overlapping;
+  }
+
   /// Returns the strokes that have been erased during this drag.
   List<Stroke> onDragEnd() {
     final List<Stroke> erased = _erased;
     _erased = [];
+    return erased;
+  }
+
+  /// Returns the symbol images that have been erased during this drag.
+  List<EditorImage> onDragEndImages() {
+    final erased = _erasedImages.toList();
+    _erasedImages.clear();
     return erased;
   }
 

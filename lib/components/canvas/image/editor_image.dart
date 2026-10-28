@@ -87,6 +87,11 @@ sealed class EditorImage extends ChangeNotifier {
   /// Whether this image is inverted if Prefs.editorAutoInvert.value
   bool invertible;
 
+  /// Whether this image was inserted by the symbol tool.
+  ///
+  /// The eraser removes whole symbol images, but leaves other images alone.
+  bool isSymbol;
+
   /// The BoxFit used if this is a page's background image
   BoxFit backgroundFit;
 
@@ -99,6 +104,7 @@ sealed class EditorImage extends ChangeNotifier {
     required this.pageSize,
     this.naturalSize = .zero,
     this.invertible = true,
+    this.isSymbol = false,
     this.backgroundFit = .contain,
     required this.onMoveImage,
     required this.onDeleteImage,
@@ -152,6 +158,7 @@ sealed class EditorImage extends ChangeNotifier {
     'e': extension,
     'i': pageIndex,
     'v': invertible,
+    if (isSymbol) 'sym': true,
     'f': backgroundFit.index,
     'x': dstRect.left,
     'y': dstRect.top,

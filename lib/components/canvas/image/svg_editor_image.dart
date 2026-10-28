@@ -17,6 +17,7 @@ class SvgEditorImage extends EditorImage {
     required super.pageIndex,
     required super.pageSize,
     super.invertible,
+    super.isSymbol,
     super.backgroundFit,
     required super.onMoveImage,
     required super.onDeleteImage,
@@ -78,6 +79,13 @@ class SvgEditorImage extends EditorImage {
       pageIndex: json['i'] ?? 0,
       pageSize: .infinite,
       invertible: json['v'] ?? true,
+      // Files saved before the `sym` flag existed: recognise the built-in
+      // notes by the marker our SVG builder puts in them.
+      isSymbol:
+          json['sym'] as bool? ??
+          ((svgString?.contains('<desc>stemUp</desc>') ?? false) ||
+              (svgString?.contains('<desc>stemDown</desc>') ?? false) ||
+              (svgString?.contains('<desc>whole</desc>') ?? false)),
       backgroundFit: json['f'] != null ? .values[json['f']] : .contain,
       onMoveImage: null,
       onDeleteImage: null,
@@ -196,6 +204,7 @@ class SvgEditorImage extends EditorImage {
       pageIndex: pageIndex,
       pageSize: .infinite,
       invertible: invertible,
+      isSymbol: isSymbol,
       backgroundFit: backgroundFit,
       onMoveImage: onMoveImage,
       onDeleteImage: onDeleteImage,

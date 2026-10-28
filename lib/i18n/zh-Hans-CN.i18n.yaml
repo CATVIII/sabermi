@@ -316,6 +316,25 @@ editor:
     pencil: 铅笔
     shapePen: 形状笔
     laserPointer: 激光笔
+  symbols:
+    toolName: 符号
+    pickSymbol: 选择符号
+    builtIn: 内置符号
+    custom: 自定义符号
+    addSvg: 添加 SVG
+    deleteSymbol: 删除
+    size: 大小
+    stemHint: 向上或下滑动以确认符杆方向
+    tapToInsert: 点击画布插入图形
+    invalidSvg: 不是有效的 SVG 文件
+    svgTooLarge: SVG 文件太大
+    added: 已添加「{name}」
+    notes:
+      whole: 全音符
+      half: 二分音符
+      quarter: 四分音符
+      eighth: 八分音符
+      sixteenth: 十六分音符
   penOptions:
     size: 粗细
   colors:

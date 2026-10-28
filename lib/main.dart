@@ -23,6 +23,7 @@ import 'package:saber/data/nextcloud/saber_syncer.dart';
 import 'package:saber/data/prefs.dart';
 import 'package:saber/data/routes.dart';
 import 'package:saber/data/sentry/sentry_init.dart';
+import 'package:saber/data/symbols/custom_symbol_store.dart';
 import 'package:saber/data/tools/stroke_properties.dart';
 import 'package:saber/i18n/strings.g.dart';
 import 'package:saber/pages/editor/editor.dart';
@@ -98,6 +99,8 @@ Future<void> appRunner(List<String> args) async {
     stows.url.waitUntilRead(),
     stows.allowInsecureConnections.waitUntilRead(),
     stows.waitUntilPenPropertiesRead(),
+    stows.waitUntilSymbolPropertiesRead(),
+    CustomSymbolStore.init(),
     stows.migrateLegacyPenActions(),
     PencilShader.init(),
     Printing.info().then((info) {
